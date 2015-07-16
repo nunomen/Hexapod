@@ -33,4 +33,3 @@ As combinações
 			10 XXXXXX
 			11 XXXXXX
 podem vir a ser usadas para transmissão de dados de sensores.
-			
