@@ -2,8 +2,8 @@ import Packet
 
 joao = Packet.Packet()
 
-print joao.rabo()
+print joao.setLeg(1,2,3,4)
 
-rita = Packet.Packet()
+josefino = Packet.Packet()
 
-print rita.rabo()
+print josefino.setLeg(3,4,5,6)
