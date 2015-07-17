@@ -12,7 +12,8 @@ pata3.setAngles(10,20,90)
 
 joao.setLeg(1,pata1)
 joao.setLeg(2,pata2)
-joao.setLeg(3,pata3)
+joao.setLeg(5,pata3)
 
-for x in range(1,4):
-	print joao.getLeg(x).getAngles()
+#Verify that the packet is well built
+for character in joao.getPack():
+  print character, character.encode('hex')
