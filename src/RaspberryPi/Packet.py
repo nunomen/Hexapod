@@ -1,10 +1,12 @@
 class Packet:
 	def __init__(self):
-		self.data = 1
+		self.data = {}
 
-	def setLeg(self,id,coxa,femur,tibia):
-		self.data = id
-		return self.data
+	def setLeg(self,id,leg):
+		self.data.update({id : leg})
+
+	def getLeg(self,id):
+		return self.data[id]
 
 	def getPack(self):
 		str = ""
@@ -12,5 +14,12 @@ class Packet:
 			str = str + ""
 		return str
 
+class Leg:
+	def __init__(self):
+		self.data = []
 
+	def setAngles(self,coxa,femur,tibia):
+		self.data.extend([coxa,femur,tibia])
 
+	def getAngles(self):
+		return self.data
