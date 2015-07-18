@@ -16,11 +16,12 @@ class Packet:
 		for i in self.data.keys():
 			flg[8-i] = '1'
 		str = "~%~" + chr(int(''.join(flg),2))
-
-		"""for x in range(1,6):
+		for leg in self.data.keys():
 			str = str + "%/"
-			str = str + getLeg(x).getAngles()
-			str = str + "/%" """
+			vec=self.data[leg].getAngles()
+			for angle in vec:
+				str = str + chr(angle)
+			str = str + "/%"
 		return str + "%~%"
 
 #Class leg will be moved to the kinematics package
