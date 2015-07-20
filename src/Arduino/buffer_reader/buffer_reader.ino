@@ -1,4 +1,5 @@
 byte lol;
+int a=0;
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);  
@@ -11,5 +12,6 @@ void loop() {
     lol = Serial.read();
     /*ECHO the value that was read, back to the serial port. */
     Serial.write(lol);
+    a++;
   }
 }
