@@ -16,7 +16,7 @@ class Packet:
 		for i in self.data.keys():
 			flg[8-i] = '1'
 		str = chr(222) + chr(230) + chr(222) + chr(int(''.join(flg),2))
-		for leg in self.data.keys():
+		for leg in reversed(self.data.keys()):
 			vec=self.data[leg].getAngles()
 			for angle in vec:
 				str = str + chr(angle)
