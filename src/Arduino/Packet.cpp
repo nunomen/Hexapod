@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "Packet.h"
+#include "Robot.h"
 
 using namespace std;
 
@@ -28,6 +29,54 @@ Packet::~Packet()
     free(this->data);
 }
 
+bool Packet::header()
+{
+    if(data[0] != '~' || data[1] != '%' || data[2] != '~')
+    {
+        return false;
+    }
+    else
+    {
+        *flags = data[3];
+    }
+}
+
+Packet::decrypt()
+{
+    int i = 3;
+    int j = 5;
+    int* angles;
+    int* legs;
+    while(i < 9)
+    {
+        if(is_flag_set(i))
+        {
+            //angulos da leg
+            *angles = data[j];
+            angles++;
+            *angles = data[j+1];
+            angles++;
+            *angles = data[j+2];
+            angles++;
+
+            //leg 
+            *legs = 8 - i;
+        }
+        i++;
+        j = j + 3;
+    }
+}
+
+void* Packet::getLegs()
+{
+    return legs;
+}
+
+void* Packet::getAngles()
+{
+    return angles;
+}
+
 uint8_t Packet::get_size(void)
 {
     return this->size;
@@ -38,7 +87,7 @@ void Packet::set_size(uint8_t size)
     this->size= size;
 }
 
-bool Packet::set_flag(uint8_t index)
+/*bool Packet::set_flag(uint8_t index)
 {
     //flag must be between 0 and 7
     if(index < 0 || index > 7)
@@ -74,7 +123,7 @@ bool Packet::reset_flag(uint8_t index)
         this->flags-= pow(2,index);
         return true;
     }
-}
+}*/
 
 bool Packet::is_flag_set(uint8_t index)
 {
