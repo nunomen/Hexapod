@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <math.h>
 #include "Packet.h"
-#include "Robot.h"
 
 using namespace std;
 
@@ -13,6 +12,7 @@ Packet::Packet()
     this->data= NULL;
     this->flags= '\0';
     this->size= 0;
+
 }
 
 Packet::Packet(void *data, uint8_t dataSize)
@@ -31,7 +31,8 @@ Packet::~Packet()
 
 bool Packet::header()
 {
-    if(data[0] != '~' || data[1] != '%' || data[2] != '~')
+    char* temp = (char*)data;
+    if(temp[0] != '~' || temp[1] != '%' || temp[2] != '~')
     {
         return false;
     }
@@ -41,22 +42,21 @@ bool Packet::header()
     }
 }
 
-Packet::decrypt()
+void Packet::decrypt()
 {
     int i = 3;
     int j = 5;
-    int* angles;
-    int* legs;
+    char* temp = (char*)data;
     while(i < 9)
     {
         if(is_flag_set(i))
         {
             //angulos da leg
-            *angles = data[j];
+            *angles = temp[j];
             angles++;
-            *angles = data[j+1];
+            *angles = temp[j+1];
             angles++;
-            *angles = data[j+2];
+            *angles = temp[j+2];
             angles++;
 
             //leg 
@@ -67,16 +67,16 @@ Packet::decrypt()
     }
 }
 
-void* Packet::getLegs()
+void *Packet::getLegs(void)
 {
     return legs;
 }
 
-void* Packet::getAngles()
+void *Packet::getAngles(void)
 {
     return angles;
 }
-
+    
 uint8_t Packet::get_size(void)
 {
     return this->size;

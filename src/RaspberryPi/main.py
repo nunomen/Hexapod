@@ -18,7 +18,7 @@ joao.setLeg(5,pata3)
 for character in joao.getPack():
   print character, character.encode('hex')
 
-#ser = serial.Serial('/dev/ttyACM0', 9600)
+ser = serial.Serial('/dev/ttyACM1', 9600)
 
-#for x in joao.getPack():
-#    ser.write(x)
+for x in joao.getPack():
+    ser.write(x)
