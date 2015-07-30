@@ -21,6 +21,7 @@ class State
         char* teste;
         void reset();
 
+
     protected:
         int package;
     private:
@@ -28,6 +29,8 @@ class State
         int legs[6];
         int tracker;
         uint8_t flags;
+        Robot robot;
+        
 
 };
 

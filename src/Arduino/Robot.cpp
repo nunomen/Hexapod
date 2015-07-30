@@ -1,5 +1,6 @@
 #include <Servo.h>
 #include <Arduino.h>
+#include <stdint.h>
 #include "Robot.h"
 #include "Leg.h"
 #include "Packet.h"
@@ -17,21 +18,15 @@ Robot::~Robot(){
 }
 
 
-//modificar primeiro o packet
-void Robot::move(Packet packet){
-	int* numlegs = packet.getLegs();
-	int i = 0;
-	while(numlegs[i] != '\0'){
-		int* angles = packet.getAngles();
-		int j = 0;
-		while(angles[j] != '\0'){
-			if(angles[j] < 30 || angles[j] > 150)
-			{
-				legs[numlegs[i]].move(angles[j],angles[j+1],angles[j+2]);
-			}
-			j++;
-		}
-		i++;
-	}
+//Dependendo do caso, mexe a perna escolhida para a posicao indicada
+void Robot::moveLeg(uint8_t leg, uint8_t coxapos, uint8_t femurpos, uint8_t tibiapos){
+	switch(leg)
+	case 1: leg[0].move(coxapos, femurpos, tibiapos); break;
+	case 2: leg[1].move(coxapos, femurpos, tibiapos); break;
+	case 3: leg[2].move(coxapos, femurpos, tibiapos); break;
+	case 4: leg[3].move(coxapos, femurpos, tibiapos); break;
+	case 5: leg[4].move(coxapos, femurpos, tibiapos); break;
+	case 6: leg[5].move(coxapos, femurpos, tibiapos); break;
+	default: break;
 }
 

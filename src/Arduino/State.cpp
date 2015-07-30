@@ -4,13 +4,19 @@
 #include <math.h>
 #include "State.h"
 
+#define FIRST_CHAR 222
+#define SECOND_CHAR 230
+#define THIRD_CHAR 222
+
 using namespace std;
 
+
+//iniciador do state
 State::State()
 {
     tracker = 0;
     memset(this->buffer, '\0', sizeof(this->buffer));
-
+    robot = new Robot(coxainit, femurinit, femurinit);
 }
 
 State::~State()
@@ -18,6 +24,7 @@ State::~State()
 
 }
 
+//apaga o buffer
 void State::reset()
 {
     tracker = 0;
@@ -34,6 +41,7 @@ void State::writebuffer()
     {
         buffer[tracker] = Serial.read();
         tracker++;
+        Serial.println("22222222222222"); //impressao desta linha por cada serial.read efectuado
     }
 }
 
@@ -42,7 +50,7 @@ Verifica se estamos na presença do iniciador de pacote
 */
 bool State::findbeginner()
 {
-    if(buffer[0] == 222 && buffer[1] == 230 && buffer[2] == 222){
+    if(buffer[0] == FIRST_CHAR && buffer[1] == SECOND_CHAR && buffer[2] == THIRD_CHAR){
         teste = "OK";
         return true;
     }
@@ -79,20 +87,21 @@ void State::decryptheader()
         int i = 0;
         while(i<6)
         {
-            if(is_flag_set(i+2))
+            if(is_flag_set(i))
             {
-                legs[i] = 6-i;
+                legs[i] = i+1;
                 nlegs++;
             }
             i++;
         }
         Serial.println(tracker);
         Serial.println(4 + nlegs * 3);
-        if(tracker+1 == 4 + nlegs * 3)
-            Serial.println("222222222222222222222222");
+        if(tracker == 4 + nlegs * 3){
+            Serial.println("PASSOU NO TESTE");
+
+        }
         else{
-            Serial.println("333333333333333333333333333");
-            package = false;
+            Serial.println("FALHOU NO TESTE");
         }
     }
 }

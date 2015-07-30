@@ -2,6 +2,8 @@
 #include <Arduino.h>
 #include "Leg.h"
 
+
+//inicializador de perna. 
 Leg::Leg(int coxapos, int femurpos, int tibiapos, int initcoxa, int initfemur, int inittibia){
 	coxa.attach(initcoxa);
 	femur.attach(initfemur);
@@ -14,6 +16,7 @@ Leg::Leg(int coxapos, int femurpos, int tibiapos, int initcoxa, int initfemur, i
 Leg::~Leg(){
 }
 
+//posiciona os 3 servos da perna nas posicoes indicadas por posCoxa, posFemur e posTibia
 void Leg::move(int posCoxa, int posFemur, int posTibia){
 	coxa.write(posCoxa);
 	femur.write(posFemur);
