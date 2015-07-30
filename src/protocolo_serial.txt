@@ -1,30 +1,31 @@
-CARACTER INICIADOR E TERMINADOR
+CARACTER INICIADOR
 O início da transmissão de um pacote é iniciado por
-			~%~
-e terminado por
-			%~%
+222 230 222
 
-DUAS SERIALS
-O Arduino Mega tem 3 serials. A serial 1 serve para receber da Raspberry Pi, a serial 2 serve para enviar dados para a Raspberry. A serial 3 ainda não tem utilidade especificada.
 
 ENVIO DE UM PACOTE
-O pacote tem tamanho variável. O primeiro byte a ser enviado tem o tamanho em byte dos dados do pacote. O segundo byte tem as flags referentes aos dados. Os dados são transmitidos após o segundo byte.
+O pacote tem tamanho variável. O primeiro byte a ser enviado tem as flags referentes aos dados. Os dados são transmitidos após o primeiro byte.
 
 Exemplo 1:
 ----Inicio do exemplo----
-~%~
-3
-b'0000 0001
-45
+222 230 222
+0001 0011
 30
+20
+20
+45
+60
+80
+20
+20
 90
 %~%
 ----Fim do exemplo----
 
-O exemplo 1 envia os  três angulos referentes à pata 0 (zero).
+O exemplo 1 envia os nove ângulos referentes às patas 1(um), 2(dois) e 5(cinco).
 
 FLAGS 
-O segundo byte a ser enviado contém flags para identificar quais os dados que vêm no pacote. A combinação
+O primeiro byte a ser enviado contém flags para identificar quais os dados que vêm no pacote. A combinação
 			00 XXXXXX
 identifica as patas, sendo o bit menos significativo a pata 0, o segundo bit menos significativo é referente à pata 1 e assim sucessivamente.
 

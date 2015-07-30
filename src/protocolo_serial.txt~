@@ -1,16 +1,8 @@
 CARACTER INICIADOR E TERMINADOR
-
-TERMINADORES DE PACOTE:
 O início da transmissão de um pacote é iniciado por
 			~%~
 e terminado por
 			%~%
-
-TERMINADORES DE LINHA:
-O iniciador de linha é 
-			%/
-e o terminador é 
-			/%
 
 DUAS SERIALS
 O Arduino Mega tem 3 serials. A serial 1 serve para receber da Raspberry Pi, a serial 2 serve para enviar dados para a Raspberry. A serial 3 ainda não tem utilidade especificada.
