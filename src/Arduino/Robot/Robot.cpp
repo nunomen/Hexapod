@@ -29,4 +29,3 @@ void Robot::moveLeg(uint8_t leg, uint8_t coxapos, uint8_t femurpos, uint8_t tibi
 	case 6: leg[5].move(coxapos, femurpos, tibiapos); break;
 	default: break;
 }
-

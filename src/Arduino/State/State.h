@@ -15,11 +15,17 @@ class State
         bool findbeginner();
         bool header();
         void decryptheader();
-        bool is_flag_set(uint8_t index);
-        void getangles();
+        bool is_flag_set(uint8_t);
+        int getangles(int);
         uint8_t buffer[30];
         char* teste;
         void reset();
+        int getlegs(int);
+
+        //***TESTE COM LEDS***//
+
+        void ON();
+        void OFF();
 
 
     protected:
@@ -29,7 +35,7 @@ class State
         int legs[6];
         int tracker;
         uint8_t flags;
-        Robot robot;
+
         
 
 };

@@ -22,4 +22,3 @@ void Leg::move(int posCoxa, int posFemur, int posTibia){
 	femur.write(posFemur);
 	tibia.write(posTibia);
 }
-
