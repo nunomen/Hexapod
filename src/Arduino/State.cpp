@@ -3,10 +3,14 @@
 #include <stdlib.h>
 #include <math.h>
 #include "State.h"
+#include "Robot.h"
 
 #define FIRST_CHAR 222
 #define SECOND_CHAR 230
 #define THIRD_CHAR 222
+#define INITIATOR_PLUS_HEADER 4
+#define NUMBER_OF_ANGLES_PER_LEG 3
+#define NUMBER_OF_LEGS 6
 
 using namespace std;
 
@@ -16,6 +20,8 @@ State::State()
 {
     tracker = 0;
     memset(this->buffer, '\0', sizeof(this->buffer));
+    memset(this->legs, '\0', sizeof(this->legs));
+    robot = new Robot(90,90,90);
     
 }
 
@@ -81,12 +87,13 @@ bool State::header()
 /*
 Baseado no header, verifica se estamos na presenca de um pacote valido.
 Se estivermos, podemos comecar a interpretar o header.
+Na interpretacao do header guarda as pernas que vao mexer em legs.
+Devolve true se passar no teste de verificacao de pacote, false caso contrario.
 */
-void State::decryptheader()
+bool State::decryptheader()
 {
-    bool decrypt = header();
-
-    if(decrypt)
+    //nao criar variaveis quando nao sao necessarias
+    if(header())
     {
         Serial.println("*** Decryptheader called ***");
 
@@ -94,11 +101,11 @@ void State::decryptheader()
         int nlegs = 0;
         int i = 0;
 
-        while(i<6)
+        while(i < NUMBER_OF_LEGS)
         {
             if(is_flag_set(i))
             {
-                legs[i] = 1;
+                legs[nlegs] = i;
                 nlegs++;
             }
             i++;
@@ -107,31 +114,59 @@ void State::decryptheader()
         Serial.print("TRACKER = ");
         Serial.println(tracker);
         Serial.print("TOTAL BYTE COUNT = ");
-        Serial.println(4 + nlegs * 3);
+        Serial.println(INITIATOR_PLUS_HEADER + nlegs * NUMBER_OF_ANGLES_PER_LEG);
 
-        if(tracker == 4 + nlegs * 3){
+        if(tracker == INITIATOR_PLUS_HEADER + nlegs * NUMBER_OF_ANGLES_PER_LEG){
             Serial.println("PASSOU NO TESTE");
+            Serial.println("*** Decryptheader end ***");
+            return true;
 
         }
         else{
             Serial.println("FALHOU NO TESTE");
-        }
+            Serial.println("*** Decryptheader end ***");
+            return false;
 
-        Serial.println("*** Decryptheader end ***");
+        }
     }
 }
 
+/*
+Metodo que, apos todas as verificacoes e baseado nas pernas que irao mexer, coloca os servos de cada pata nos angulos indicados
+*/
+void State::moveRobot(){
+    if(decryptheader()){
+        int i = 0;
+        int j = 0;
+        uint8_t leg = getlegs(i);
+        while(leg != '\0'){
+            robot->moveLeg(leg,getangles(4+j), getangles(4+j), getangles(4+j));
+            i++;
+            j = j + 3;
+            leg = getlegs(j);
+        }
+    }
+}
+
+/*
+Descodifica cada bit do header, baseado no index dado
+*/
 bool State::is_flag_set(uint8_t index)
 {
     return (this->flags & (1 << index)) != 0;
 }
 
-
-int State::getlegs(int i)
+/*
+Retorna qual a pata mexer, \0 se nao houver.
+*/
+uint8_t State::getlegs(int i)
 {
     return legs[i];
 }
 
+/*
+Retorna o angulo existente no buffer
+*/
 int State::getangles(int i)
 {
     if(i>3 && i<=tracker)

@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <Servo.h>
 #include <Arduino.h>
+#include "Robot.h"
 
 
 class State
@@ -14,13 +15,13 @@ class State
         void writebuffer();
         bool findbeginner();
         bool header();
-        void decryptheader();
+        bool decryptheader();
         bool is_flag_set(uint8_t);
         int getangles(int);
         uint8_t buffer[30];
-        char* teste;
         void reset();
-        int getlegs(int);
+        uint8_t getlegs(int);
+        void moveRobot();
 
         //***TESTE COM LEDS***//
 
@@ -29,12 +30,13 @@ class State
 
 
     protected:
-        int package;
+    	
     private:
         
-        int legs[6];
+        uint8_t legs[6];
         int tracker;
         uint8_t flags;
+        Robot* robot;
 
         
 
