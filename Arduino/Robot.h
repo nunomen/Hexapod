@@ -12,7 +12,6 @@ class Robot{
 	private:
 
 		Leg* legs[6];
-
 	public:
 	
 		Robot(uint8_t coxapos, uint8_t femurpos, uint8_t tibiapos); //Constructor of the Robot class

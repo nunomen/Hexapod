@@ -13,18 +13,12 @@ class State
         State(void);
         virtual ~State(void);
         void writebuffer();
-        bool findbeginner();
-        bool header();
-        bool decryptheader();
-        bool is_flag_set(uint8_t);
-        int getangles(int);
-        uint8_t buffer[30];
         void reset();
-        uint8_t getlegs(int);
         void moveRobot();
+        
 
         //***TESTE COM LEDS***//
-
+        void resetpins();
         void ON();
         void OFF();
 
@@ -32,11 +26,17 @@ class State
     protected:
     	
     private:
-        
         uint8_t legs[6];
+        uint8_t buffer[30];
         int tracker;
         uint8_t flags;
         Robot* robot;
+        bool findbeginner();
+        bool header();
+        bool decryptheader();
+        int getangles(int);
+        uint8_t getlegs(int);
+        bool is_flag_set(uint8_t);
 
         
 

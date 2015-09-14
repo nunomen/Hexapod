@@ -22,7 +22,6 @@ State::State()
     memset(this->buffer, '\0', sizeof(this->buffer));
     memset(this->legs, '\0', sizeof(this->legs));
     robot = new Robot(90,90,90);
-    
 }
 
 State::~State()
@@ -105,7 +104,7 @@ bool State::decryptheader()
         {
             if(is_flag_set(i))
             {
-                legs[nlegs] = i;
+                legs[nlegs] = i+1;
                 nlegs++;
             }
             i++;
@@ -136,16 +135,44 @@ Metodo que, apos todas as verificacoes e baseado nas pernas que irao mexer, colo
 */
 void State::moveRobot(){
     if(decryptheader()){
+        Serial.println("ENTREI NO IF");
         int i = 0;
         int j = 0;
-        uint8_t leg = getlegs(i);
-        while(leg != '\0'){
-            robot->moveLeg(leg,getangles(4+j), getangles(4+j), getangles(4+j));
+        resetpins();
+        while(legs[i] != '\0'){
+            Serial.println(legs[i]);
+            robot->moveLeg(legs[i],getangles(4+j), getangles(5+j), getangles(6+j));
             i++;
             j = j + 3;
-            leg = getlegs(j);
+
         }
     }
+}
+
+void State::resetpins(){
+    digitalWrite(2,LOW);
+    digitalWrite(3,LOW);
+    digitalWrite(4,LOW); 
+
+    digitalWrite(5,LOW);
+    digitalWrite(6,LOW);
+    digitalWrite(7,LOW);
+
+    digitalWrite(8,LOW);
+    digitalWrite(9,LOW);
+    digitalWrite(10,LOW);
+
+    digitalWrite(11,LOW);
+    digitalWrite(12,LOW);
+    digitalWrite(13,LOW);
+
+    digitalWrite(A0,LOW);
+    digitalWrite(A1,LOW);
+    digitalWrite(A2,LOW);
+
+    digitalWrite(A3,LOW);
+    digitalWrite(A4,LOW);
+    digitalWrite(A5,LOW);
 }
 
 /*
@@ -154,14 +181,6 @@ Descodifica cada bit do header, baseado no index dado
 bool State::is_flag_set(uint8_t index)
 {
     return (this->flags & (1 << index)) != 0;
-}
-
-/*
-Retorna qual a pata mexer, \0 se nao houver.
-*/
-uint8_t State::getlegs(int i)
-{
-    return legs[i];
 }
 
 /*
