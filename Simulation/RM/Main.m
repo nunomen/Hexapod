@@ -1,13 +1,16 @@
 
 %% Direct Kinematics and Jacobian
 
-RobotDH=Robot_DH;
+clear all
+clc
+
+RobotDH= Robot_DH();
 [T,Tt]=D_Kin(RobotDH);
 display('Direct Kinematics for Hexapod calculated.');
 
 %% display leg
 
-[T1r, T2r, T3r, T4r, T5r]=displayLeg(T{1}, T{2}, T{3}, T{4}, T{5},pi/4, pi/4, pi/4);
+Tr= displayLeg(T, 0, pi/2, 0);
 
 
 %% Inverse Kinematics
