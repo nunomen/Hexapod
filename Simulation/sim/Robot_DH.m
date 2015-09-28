@@ -20,7 +20,7 @@ ref_shoulder = 0;       %-> reference for the shoulder senarvo
 ref_arm      = 0;       %-> reference for the arm servo
 ref_leg      = 0;       %-> reference for the leg servo
 rc           = 0.8;     %-> center radius
-h            = 0.5;     %-> height from the virtual center to the first servo
+h            = 0;     %-> height from the virtual center to the first servo
 k            = 0;       %-> leg index starting in 0 ending in 5
 
 syms t2 t3 t4 real;
