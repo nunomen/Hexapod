@@ -3,13 +3,14 @@ function Tr=displayLeg(T, th2, th3, th4)
 
 %t1 t2 t3 : teta1 teta2 teta3
 %T1 T2 T3: transformation matrices 1 2 and 3
+syms t2 t3 t4 real
 
 %apply angles to transformation matrices
 Tr{1}= T{1};                        %T01 is constant
-Tr{2}=apptransf(T{2}, th2, th3, th4);
-Tr{3}=apptransf(T{3}, th2, th3, th4);
-Tr{4}=apptransf(T{4}, th2, th3, th4);
-Tr{5}=apptransf(T{5}, th2, th3, th4);
+Tr{2}=Tr{1}*T{2};
+Tr{3}=subs(Tr{2}*T{3}, t2, th2);
+Tr{4}=subs(Tr{3}*T{4}, t3, th3);
+Tr{5}=subs(Tr{4}*T{5}, t4, th4);
 
 %plot the position vector
 figure;
