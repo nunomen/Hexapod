@@ -13,7 +13,7 @@ for i=1:n
     row=Robot(i,:);
     
     %Transformation Matrix
-    
+    %From robotics book
     T{i}=[cos(row(2)+row(5)) -sin(row(2)+row(5))*cos(row(4)) sin(row(2)+row(5))*sin(row(4))   row(3)*cos(row(2)+row(5));
           sin(row(2)+row(5)) cos(row(2)+row(5))*cos(row(4))  -cos(row(2)+row(5))*sin(row(4))  row(3)*sin(row(2)+row(5));
           0                  sin(row(4))                     cos(row(4))                      row(1)                   ;
