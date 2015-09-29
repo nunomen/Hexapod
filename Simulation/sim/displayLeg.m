@@ -23,7 +23,7 @@ line([Tr{2}(1,4) Tr{3}(1,4)],[Tr{2}(2,4) Tr{3}(2,4)],[Tr{2}(3,4) Tr{3}(3,4)],'Co
 line([Tr{3}(1,4) Tr{4}(1,4)],[Tr{3}(2,4) Tr{4}(2,4)],[Tr{3}(3,4) Tr{4}(3,4)],'Color','g'); %green
 line([Tr{4}(1,4) Tr{5}(1,4)],[Tr{4}(2,4) Tr{5}(2,4)],[Tr{4}(3,4) Tr{5}(3,4)],'Color','b'); %blue
 
-fprintf('Centro->Shoulder - yellow \nShoulder->Arm - red \nArm->Leg - green \nLeg->Eff - blue\n');
+fprintf(' Centro   -> Shoulder – yellow \n Shoulder -> Arm      - red \n Arm      -> Leg      - green \n Leg      -> Eff      - blue\n');
         
 xlabel('x');
 ylabel('y');

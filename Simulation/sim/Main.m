@@ -42,7 +42,7 @@ save_system('InverseK_Lib');
 close_system('InverseK_Lib');
 
 
-%% create virtual world for robot animation
+%% create virtual world for robot referentials
 vrrobot(RobotDH);
 
 
