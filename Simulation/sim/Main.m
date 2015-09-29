@@ -1,7 +1,7 @@
 
-%% Direct Kinematics and Jacobian
+%% Direct Kinematics
 
-%clear all
+clear all
 clc
 
 RobotDH= Robot_DH();
@@ -10,35 +10,37 @@ display('Direct Kinematics for Hexapod calculated.');
 
 %% display leg
 
-Tr= displayLeg(T, pi/2, pi/2, pi/2);
-
+Tr= displayLeg(T, pi/2, 0, 0);
 
 %% Inverse Kinematics
 
+syms px py pz real
+p=[px;py;pz];
+t=I_Kin(T,p);
+display('Inverse Kinematics for Hexapod calculated.');
 
 
-% %%  Create Simulink Library file DirectK_Lib.mdl
-% new_system('DirectK_Lib','Library');
-% open_system('DirectK_Lib');
-% 
+%%  Create Simulink Library file DirectK_Lib.mdl
+new_system('DirectK_Lib','Library');
+open_system('DirectK_Lib');
 
-% matlabFunctionBlock('DirectK_Lib/RobotX_Direct_Kinematics',R{7},p{8},J);
-% 
-% save_system('DirectK_Lib');
-% close_system('DirectK_Lib');
-% 
-% 
-% %%  Create Simulink Library file InverseK_Lib.mdl
-% new_system('InverseK_Lib1','Library');
-% open_system('InverseK_Lib1');
-% 
-% matlabFunctionBlock('InverseK_Lib1/RobotX_Inverse_Kinematics',Pe,Pw);
-% 
-% save_system('InverseK_Lib1');
-% close_system('InverseK_Lib1');
-% 
-% 
-% %% create virtual world for robot animation
-% vrrobot(RobotDH);
+matlabFunctionBlock('DirectK_Lib/Hexa_Direct_Kinematics',Tt);
+
+save_system('DirectK_Lib');
+close_system('DirectK_Lib');
+
+
+%%  Create Simulink Library file InverseK_Lib.mdl
+new_system('InverseK_Lib','Library');
+open_system('InverseK_Lib');
+
+matlabFunctionBlock('InverseK_Lib/Hexa_Inverse_Kinematics',t);
+
+save_system('InverseK_Lib');
+close_system('InverseK_Lib');
+
+
+%% create virtual world for robot animation
+vrrobot(RobotDH);
 
 
