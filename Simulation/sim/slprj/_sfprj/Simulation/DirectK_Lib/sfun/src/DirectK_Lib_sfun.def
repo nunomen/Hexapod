@@ -1,3 +1,0 @@
-LIBRARY DirectK_Lib_sfun.lib
-EXPORTS
-mexFunction

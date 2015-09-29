@@ -1,3 +1,0 @@
-LIBRARY InverseK_Lib_sfun.lib
-EXPORTS
-mexFunction
