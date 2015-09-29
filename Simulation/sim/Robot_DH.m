@@ -25,12 +25,15 @@ k            = 0;       %-> leg index starting in 0 ending in 5
 
 syms t2 t3 t4 real;
 
-%        d      teta                a       alfa   ref
-Robot = [0      k*(pi/3)+(pi/6)     0       0      0;
-         h      0                   rc      0      0;
-         d_sh   t2                  a_sh    -pi/2  0;
-         d_arm  t3                  a_arm   pi     0;
-         d_leg  t4                  a_leg   0      0];
+
+for k=0:5
+    %             d      teta                a       alfa   ref
+    Robot{k+1} = [0      k*(pi/3)+(pi/6)     0       0      0;
+                  h      0                   rc      0      0;
+                  d_sh   t2                  a_sh    -pi/2  0;
+                  d_arm  t3                  a_arm   pi     0;
+                  d_leg  t4                  a_leg   0      0];
+end
 
 end
 

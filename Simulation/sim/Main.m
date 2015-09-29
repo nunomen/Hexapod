@@ -5,8 +5,10 @@ clear all
 clc
 
 RobotDH= Robot_DH();
-[T,Tt]=D_Kin(RobotDH);
+[Leg, Tt]=D_Kin(RobotDH);
 display('Direct Kinematics for Hexapod calculated.');
+
+%%%%%%%%%%%%%%%% CONTINUAR DAQUI%%%%%%%%%%%%%%%%%%%%%%%
 
 %% display leg
 
