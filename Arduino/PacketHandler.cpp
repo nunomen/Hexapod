@@ -2,52 +2,35 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <math.h>
-#include "State.h"
-#include "Robot.h"
+#include <vector>
+
 
 #define FIRST_CHAR 222
 #define SECOND_CHAR 230
 #define THIRD_CHAR 222
-#define INITIATOR_PLUS_HEADER 4
-#define NUMBER_OF_ANGLES_PER_LEG 3
-#define NUMBER_OF_LEGS 6
 #define TERMINAL_CHAR 233
 
-using namespace std;
 
 // Class constructor of the packet.
-PacketHandler::PacketHandler()
-{
-    // Current index of the buffer.
+PacketHandler::PacketHandler(){}
 
-    // Clean buffer and reset tracker index.
-    this->reset();
-}
-
-PacketHandler::~PacketHandler()
-{
-    // Should it behave like this?
-    memset(this->buffer, '\0', sizeof(this->buffer));
-    memset(this->legs, '\0', sizeof(this->legs));
-}
-
-PacketHandler::receive()
+void PacketHandler::receive()
 {
     bool terminal_found = false;
-    uint8_t header_found = 0;
+    uint8_t header_bytes_found = 0;
     uint8_t tracker = 0;
     uint8_t expected_length = 0;
-    while(Serial.available() || !terminal_found)
+    while(Serial.available() && !terminal_found)
     {
         uint8_t incoming_byte = Serial.read();
         // This function returns the number of header bytes found so far
-        header_found = this->findHeader(incoming_byte, header_found);
-        if(header_found == 3)
+        header_bytes_found = this->findHeader(incoming_byte, header_bytes_found);
+        if(header_bytes_found == 3)
         {
             if(tracker == 0){
                 // Returns a pointer to the Leg array
                 // (initially contains empty Leg objects)
-                Leg* legs_ptr  = this->findFlags(incoming_byte);
+                std::vector<Leg>* legs_ptr  = this->findFlags(incoming_byte);
                 expected_length = findLength(incoming_byte) * 3;
             }
             else if(incoming_byte == TERMINAL_CHAR)
@@ -74,5 +57,64 @@ PacketHandler::receive()
             // Increment tracker
             tracker++;
         }
+    }
+}
+
+uint8_t PacketHandler::findHeader(uint8_t incoming_byte, uint8_t header_bytes_found)
+{
+    if(header_bytes_found == 0 && incoming_byte == FIRST_CHAR)
+    {
+        return 1;
+    }
+    else if(header_bytes_found == 1 && incoming_byte == SECOND_CHAR)
+    {
+        return 2;
+    }
+    else if(header_bytes_found == 2 && incoming_byte == THIRD_CHAR)
+    {
+        return 3;
+    }
+    else if(header_bytes_found == 3)
+    {
+        return 3;
+    }
+    else return -1;
+}
+
+std::vector<Leg>* PacketHandler::findFlags(uint8_t incoming_byte)
+{
+    std::vector<Leg> legs;
+    for(int i=0; i<8; i++){
+        if(incoming_byte & (1 << i) != 0){
+            // Create Leg object with id=i and insert it into the legs array
+            legs.push_back(Leg myleg(i));
+        }
+    }
+    return &legs;
+}
+
+uint8_t PacketHandler::findLength(uint8_t incoming_byte)
+{
+    uint8_t counter = 0;
+    for(int i=0; i<8; i++){
+        if(incoming_byte & (1 << i) != 0){
+            // Increment counter
+            counter++;
+        }
+    }
+    return counter;
+}
+
+void PacketHandler::updateLeg(uint8_t incoming_byte, uint8_t tracker, std::vector<Leg>* legs_ptr)
+{
+    uint8_t index = tracker - 1;
+    if(index % 3 == 0){
+        legs_ptr->at(index/3).setShoulder(incoming_byte);
+    }
+    else if(index % 3 == 1){
+        legs_ptr->at(index/3).setElbow(incoming_byte);
+    }
+    else if(index % 3 == 2){
+        legs_ptr->at(index/3).setFoot(incoming_byte);
     }
 }
