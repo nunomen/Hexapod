@@ -1,9 +1,9 @@
-import packet
+from packet import Packet
 from serial import Serial, SerialException
 from robot.leg import Leg
 
 
-sample_packet = packet.Packet()
+sample_packet = Packet()
 
 leg_1 = Leg()
 leg_2 = Leg()
@@ -23,8 +23,10 @@ sample_packet.set_leg(3, leg_3)
 sample_packet.set_leg(4, leg_4)
 sample_packet.set_leg(5, leg_5)
 
+sample_packet.make_packet()
+
 # Verify that the packet is well built, for debugging purposes.
-for character in sample_packet.get_pack():
+for character in str(sample_packet):
     print(character, ord(character))
 
 
@@ -37,7 +39,7 @@ if __name__ == "__main__":
     try:
         serial = Serial(port, baud_rate)
 
-        for x in sample_packet.get_pack():
+        for x in str(sample_packet):
             serial.write(x)
 
     except SerialException:
