@@ -50,8 +50,8 @@ void PacketHandler::receive()
             if(tracker > 0){
                 // This function updates the respective angle of the respective
                 // leg, given by incoming_byte
-                // The leg to be updated is given by floor(tracker/3)
-                // The joint to be updated is given by tracker%3
+                // The leg to be updated is given by 'floor(tracker / 3)'
+                // The joint to be updated is given by 'tracker % 3'
                 this->updateLeg(incoming_byte, tracker, legs_ptr);
             }
             // Increment tracker
@@ -62,7 +62,17 @@ void PacketHandler::receive()
 
 uint8_t PacketHandler::findHeader(uint8_t incoming_byte, uint8_t header_bytes_found)
 {
-    if(header_bytes_found == 0 && incoming_byte == FIRST_CHAR)
+    /*
+    This method will receive the incoming byte from serial, and the number of
+    bytes of the header found until this this point.
+    It should return the header bytes found if everything runs as expected, and
+    -1 otherwise.
+    */
+    if(header_bytes_found == 3)
+    {
+        return 3;
+    }
+    else if(header_bytes_found == 0 && incoming_byte == FIRST_CHAR)
     {
         return 1;
     }
@@ -74,19 +84,20 @@ uint8_t PacketHandler::findHeader(uint8_t incoming_byte, uint8_t header_bytes_fo
     {
         return 3;
     }
-    else if(header_bytes_found == 3)
-    {
-        return 3;
-    }
     else return -1;
 }
 
 std::vector<Leg>* PacketHandler::findFlags(uint8_t incoming_byte)
 {
+    /*
+    This method receives the incoming byte for the header, and makes bitwise
+    operations to find the leg indexes that are active in the incoming packet.
+    It returns a pointer to an array of active leg objects.
+    */
     std::vector<Leg> legs;
-    for(int i=0; i<8; i++){
+    for(int i = 0; i < 8; i++){
         if(incoming_byte & (1 << i) != 0){
-            // Create Leg object with id=i and insert it into the legs array
+            // Create Leg object with id=i and insert it into the legs array.
             legs.push_back(Leg myleg(i));
         }
     }
@@ -95,10 +106,12 @@ std::vector<Leg>* PacketHandler::findFlags(uint8_t incoming_byte)
 
 uint8_t PacketHandler::findLength(uint8_t incoming_byte)
 {
+    /*
+    This method receives the header byte and returns the number of active legs.
+    */
     uint8_t counter = 0;
-    for(int i=0; i<8; i++){
+    for(int i = 0; i < 8; i++){
         if(incoming_byte & (1 << i) != 0){
-            // Increment counter
             counter++;
         }
     }
