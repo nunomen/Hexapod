@@ -30,7 +30,7 @@ void PacketHandler::receive()
             if(tracker == 0){
                 // Returns a pointer to the Leg array
                 // (initially contains empty Leg objects)
-                std::vector<Leg>* legs_ptr  = this->findFlags(incoming_byte);
+                Vector<Leg>* legs_ptr  = this->findFlags(incoming_byte);
                 expected_length = findLength(incoming_byte) * 3;
             }
             else if(incoming_byte == TERMINAL_CHAR)
@@ -87,14 +87,14 @@ uint8_t PacketHandler::findHeader(uint8_t incoming_byte, uint8_t header_bytes_fo
     else return -1;
 }
 
-std::vector<Leg>* PacketHandler::findFlags(uint8_t incoming_byte)
+Vector<Leg>* PacketHandler::findFlags(uint8_t incoming_byte)
 {
     /*
     This method receives the incoming byte for the header, and makes bitwise
     operations to find the leg indexes that are active in the incoming packet.
     It returns a pointer to an array of active leg objects.
     */
-    std::vector<Leg> legs;
+    Vector<Leg> legs;
     for(int i = 0; i < 8; i++){
         if(incoming_byte & (1 << i) != 0){
             // Create Leg object with id=i and insert it into the legs array.
@@ -118,8 +118,11 @@ uint8_t PacketHandler::findLength(uint8_t incoming_byte)
     return counter;
 }
 
-void PacketHandler::updateLeg(uint8_t incoming_byte, uint8_t tracker, std::vector<Leg>* legs_ptr)
+void PacketHandler::updateLeg(uint8_t incoming_byte, uint8_t tracker, Vector<Leg>* legs_ptr)
 {
+    /*
+
+    */
     uint8_t index = tracker - 1;
     if(index % 3 == 0){
         legs_ptr->at(index/3).setShoulder(incoming_byte);
