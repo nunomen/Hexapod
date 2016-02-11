@@ -13,7 +13,6 @@
 
 // Class constructor of the packet.
 PacketHandler::PacketHandler(){
-    
 }
 
 void PacketHandler::receive()

@@ -5,20 +5,29 @@
 #include <Arduino.h>
 #include <stdint.h>
 
+
 class Leg{
-	
+
 	private:
 
-		Servo coxa,femur,tibia;
-		uint8_t coxapos,femurpos,tibiapos;
+		uint8_t leg_id;
+		uint8_t shoulder_angle;
+		uint8_t elbow_angle;
+		uint8_t foot_angle;
 
 	public:
-	
-		Leg(uint8_t coxa,uint8_t femur,uint8_t tibia); //Constructor of the Leg class
-		
+
+		Leg(uint8_t id); //Constructor of the Leg class
+
 		~Leg(); //Destructor of the Leg class
 
-		void move(uint8_t posCoxa,uint8_t posFemur,uint8_t posTibia);
+		void setFoot(uint8_t angle);
+
+		void setElbow(uint8_t angle);
+
+		void setShoulder(uint8_t angle);
+
+		void actuate(Servo *shoulder_servo, Servo *elbow_servo, Servo *foot_servo);
 };
 
 #endif
