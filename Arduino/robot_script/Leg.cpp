@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 
-//inicializador de perna. 
+//inicializador de perna.
 Leg::Leg(uint8_t coxapos, uint8_t femurpos, uint8_t tibiapos){
 	/*coxa.attach(initcoxa);
 	femur.attach(initfemur);

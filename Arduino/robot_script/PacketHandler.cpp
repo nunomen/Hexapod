@@ -1,9 +1,9 @@
+#include "PacketHandler.h"
+#include <Arduino.h>
 #include <string.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <math.h>
-#include <vector>
-
 
 #define FIRST_CHAR 222
 #define SECOND_CHAR 230
@@ -12,7 +12,9 @@
 
 
 // Class constructor of the packet.
-PacketHandler::PacketHandler(){}
+PacketHandler::PacketHandler(){
+    
+}
 
 void PacketHandler::receive()
 {
@@ -20,6 +22,7 @@ void PacketHandler::receive()
     uint8_t header_bytes_found = 0;
     uint8_t tracker = 0;
     uint8_t expected_length = 0;
+    Vector<Leg> legs;
     while(Serial.available() && !terminal_found)
     {
         uint8_t incoming_byte = Serial.read();
@@ -30,7 +33,7 @@ void PacketHandler::receive()
             if(tracker == 0){
                 // Returns a pointer to the Leg array
                 // (initially contains empty Leg objects)
-                Vector<Leg>* legs_ptr  = this->findFlags(incoming_byte);
+                legs  = this->findFlags(incoming_byte);
                 expected_length = findLength(incoming_byte) * 3;
             }
             else if(incoming_byte == TERMINAL_CHAR)
@@ -52,7 +55,7 @@ void PacketHandler::receive()
                 // leg, given by incoming_byte
                 // The leg to be updated is given by 'floor(tracker / 3)'
                 // The joint to be updated is given by 'tracker % 3'
-                this->updateLeg(incoming_byte, tracker, legs_ptr);
+                this->updateLeg(incoming_byte, tracker, legs);
             }
             // Increment tracker
             tracker++;
@@ -87,7 +90,7 @@ uint8_t PacketHandler::findHeader(uint8_t incoming_byte, uint8_t header_bytes_fo
     else return -1;
 }
 
-Vector<Leg>* PacketHandler::findFlags(uint8_t incoming_byte)
+Vector<Leg> PacketHandler::findFlags(uint8_t incoming_byte)
 {
     /*
     This method receives the incoming byte for the header, and makes bitwise
@@ -101,7 +104,7 @@ Vector<Leg>* PacketHandler::findFlags(uint8_t incoming_byte)
             legs.push_back(Leg myleg(i));
         }
     }
-    return &legs;
+    return legs;
 }
 
 uint8_t PacketHandler::findLength(uint8_t incoming_byte)
@@ -118,19 +121,19 @@ uint8_t PacketHandler::findLength(uint8_t incoming_byte)
     return counter;
 }
 
-void PacketHandler::updateLeg(uint8_t incoming_byte, uint8_t tracker, Vector<Leg>* legs_ptr)
+void PacketHandler::updateLeg(uint8_t incoming_byte, uint8_t tracker, Vector<Leg> &legs)
 {
     /*
 
     */
     uint8_t index = tracker - 1;
     if(index % 3 == 0){
-        legs_ptr->at(index/3).setShoulder(incoming_byte);
+        legs[index/3].setShoulder(incoming_byte);
     }
     else if(index % 3 == 1){
-        legs_ptr->at(index/3).setElbow(incoming_byte);
+        legs[index/3].setElbow(incoming_byte);
     }
     else if(index % 3 == 2){
-        legs_ptr->at(index/3).setFoot(incoming_byte);
+        legs[index/3].setFoot(incoming_byte);
     }
 }
