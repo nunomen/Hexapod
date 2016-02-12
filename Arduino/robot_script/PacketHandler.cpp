@@ -45,6 +45,7 @@ void PacketHandler::receive()
                 }
                 else{
                     command_list = legs_ptr;
+                    Serial.println("[LOG]: Packet arrived successfully.");
                 }
             }
             // If the packet length exceeds the expected

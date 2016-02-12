@@ -27,14 +27,15 @@ void setup() {
     foot[leg].attach(foot_pins[leg]);
   }
   delay(1000);
+  for(int leg = 0; leg < 6; leg++){
+    shoulder[leg].write(SHOULDER_DEF_1);
+    elbow[leg].write(ELBOW_DEF_1);
+    foot[leg].write(FOOT_DEF_1);
+    delay(500);
+  }
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-    for(int leg = 0; leg < 6; leg++){
-      shoulder[leg].write(SHOULDER_DEF_1);
-      elbow[leg].write(ELBOW_DEF_1);
-      foot[leg].write(FOOT_DEF_1);
-      delay(500);
-    }
+  handler.receive();
 }
