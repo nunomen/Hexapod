@@ -1,7 +1,9 @@
 from packet import Packet
-from serial import Serial, SerialException
 from robot.leg import Leg
+from serial.tools import list_ports
+from serial import Serial, SerialException
 from sys import argv
+from time import sleep
 
 
 def main(args):
@@ -28,7 +30,7 @@ def main(args):
     sample_packet.make_packet()
 
     # TODO Make a rule on raspberry pi for Arduino, so that the port always stays the same.
-    port = '/dev/ttyACM0'
+    #port = 'COM3'
     # Configure the baud rate of the connection.
     baud_rate = 9600
 
@@ -43,18 +45,24 @@ def main(args):
             print('[LOG]: The Arduino port was set to ' + args[i+1])
             port = args[i+1]
 
-    # Verify that the packet is well built, for debugging purposes.
-    for character in str(sample_packet):
-        print(character, ord(character))
+    for port in (list_ports.comports()):
+        print(port[0])
+        try:
+            ser = Serial(port[0], baud_rate, timeout=2)
+            sleep(3)  # wait for the device to be ready
+            # send hello command
 
-    try:
-        serial = Serial(port, baud_rate)
+            for character in str(sample_packet):
+                print(character, ord(character))
+                ser.write(ord(character))
+                sleep(1)
 
-        for x in str(sample_packet):
-            serial.write(x)
+        except SerialException:
+            # print("opening serial failed")
+            print("[ERROR]: Connection Failure.")
+            pass
 
-    except SerialException:
-        print("[ERROR]: Connection Failure.")
+
 
 if __name__ == "__main__":
     main(argv)
