@@ -1,6 +1,4 @@
 #include "PacketHandler.h"
-#include "queue.h"
-#include "vector.h"
 
 const uint8_t shoulder_pins[] = { 44, 34, 42, 36, 40, 38 };
 const uint8_t elbow_pins[] = { 48, 30, 43, 37, 46, 32 };
@@ -23,7 +21,7 @@ PacketHandler handler;
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
-  for(int leg = 0; i < 6; i++){
+  for(int leg = 0; leg < 6; leg++){
     shoulder[leg].attach(shoulder_pins[leg]);
     elbow[leg].attach(elbow_pins[leg]);
     foot[leg].attach(foot_pins[leg]);

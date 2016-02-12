@@ -21,7 +21,9 @@ void PacketHandler::receive()
     uint8_t header_bytes_found = 0;
     uint8_t tracker = 0;
     uint8_t expected_length = 0;
-    Vector<Leg> legs;
+
+    Leg** legs_ptr;
+
     while(Serial.available() && !terminal_found)
     {
         uint8_t incoming_byte = Serial.read();
@@ -32,8 +34,8 @@ void PacketHandler::receive()
             if(tracker == 0){
                 // Returns a pointer to the Leg array
                 // (initially contains empty Leg objects)
-                legs  = this->findFlags(incoming_byte);
                 expected_length = findLength(incoming_byte) * 3;
+                legs_ptr = this->findFlags(expected_length / 3, incoming_byte);
             }
             else if(incoming_byte == TERMINAL_CHAR)
             {
@@ -42,7 +44,7 @@ void PacketHandler::receive()
                     return;
                 }
                 else{
-                    // TODO Add leg nodes to the queue
+                    command_list = legs_ptr;
                 }
             }
             // If the packet length exceeds the expected
@@ -54,7 +56,7 @@ void PacketHandler::receive()
                 // leg, given by incoming_byte
                 // The leg to be updated is given by 'floor(tracker / 3)'
                 // The joint to be updated is given by 'tracker % 3'
-                this->updateLeg(incoming_byte, tracker, legs);
+                this->updateLeg(incoming_byte, tracker, legs_ptr);
             }
             // Increment tracker
             tracker++;
@@ -89,20 +91,22 @@ uint8_t PacketHandler::findHeader(uint8_t incoming_byte, uint8_t header_bytes_fo
     else return -1;
 }
 
-Vector<Leg> PacketHandler::findFlags(uint8_t incoming_byte)
+Leg** PacketHandler::findFlags(uint8_t length, uint8_t incoming_byte)
 {
     /*
     This method receives the incoming byte for the header, and makes bitwise
     operations to find the leg indexes that are active in the incoming packet.
     It returns a pointer to an array of active leg objects.
     */
-    Vector<Leg> legs;
+    Leg* legs[length];
     for(int i = 0; i < 8; i++){
         if(incoming_byte & (1 << i) != 0){
             // Create Leg object with id=i and insert it into the legs array.
-            legs.push_back(Leg myleg(i));
+            Leg myleg(i);
+            legs[i] = &myleg;
         }
     }
+    Leg** ptr = legs;
     return legs;
 }
 
@@ -120,19 +124,19 @@ uint8_t PacketHandler::findLength(uint8_t incoming_byte)
     return counter;
 }
 
-void PacketHandler::updateLeg(uint8_t incoming_byte, uint8_t tracker, Vector<Leg> &legs)
+void PacketHandler::updateLeg(uint8_t incoming_byte, uint8_t tracker, Leg** legs_ptr)
 {
     /*
 
     */
     uint8_t index = tracker - 1;
     if(index % 3 == 0){
-        legs[index/3].setShoulder(incoming_byte);
+        legs_ptr[index/3]->setShoulder(incoming_byte);
     }
     else if(index % 3 == 1){
-        legs[index/3].setElbow(incoming_byte);
+        legs_ptr[index/3]->setElbow(incoming_byte);
     }
     else if(index % 3 == 2){
-        legs[index/3].setFoot(incoming_byte);
+        legs_ptr[index/3]->setFoot(incoming_byte);
     }
 }
