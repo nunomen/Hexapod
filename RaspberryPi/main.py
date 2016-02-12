@@ -37,10 +37,10 @@ def main(args):
         if mode == '-d':
             print('[LOG]: This program is in debug mode.')
         elif mode == '-br':
-            print('[LOG]: The baud rate is set to %s', args[i+1])
+            print('[LOG]: The baud rate is set to ' + args[i+1])
             baud_rate = args[i+1]
         elif mode == '-p':
-            print('[LOG]: The Arduino port was set to %s', args[i+1])
+            print('[LOG]: The Arduino port was set to ' + args[i+1])
             port = args[i+1]
 
     # Verify that the packet is well built, for debugging purposes.
