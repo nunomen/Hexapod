@@ -4,6 +4,7 @@ from serial.tools import list_ports
 from serial import Serial, SerialException
 from sys import argv
 from time import sleep
+from time import time
 
 
 def main(args):
@@ -49,6 +50,7 @@ def main(args):
         print(port[0])
         try:
             ser = Serial(port[0], baud_rate, timeout=2)
+            start_time = int(round(time()))
             sleep(3)  # wait for the device to be ready
             # send hello command
             for character in str(sample_packet):
@@ -58,7 +60,13 @@ def main(args):
             print("------------------------")
 
             while True:
-                print(ord(ser.read()))
+                current_time = int(round(time()))
+                if current_time - start_time < 60:
+                    incoming_byte = ser.read()
+                    if incoming_byte:
+                        print(ord(incoming_byte))
+                else:
+                    ser.close()
 
 
         except SerialException:

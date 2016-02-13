@@ -9,60 +9,63 @@
 #define SECOND_CHAR 230
 #define THIRD_CHAR 222
 #define TERMINAL_CHAR 233
+#define TIMEOUT 1000
 
-
-// Class constructor of the packet.
-PacketHandler::PacketHandler(){
-}
-
-void PacketHandler::receive()
+uint8_t PacketHandler::receive()
 {
     bool terminal_found = false;
     uint8_t header_bytes_found = 0;
     uint8_t tracker = 0;
     uint8_t expected_length = 0;
+    unsigned long start_time = millis();
 
     Leg** legs_ptr;
 
-    while(Serial.available() && !terminal_found)
+    while(!terminal_found && millis() - start_time < TIMEOUT)
     {
-        uint8_t incoming_byte = Serial.read();
-        Serial.write(incoming_byte);
-        // This function returns the number of header bytes found so far
-        header_bytes_found = this->findHeader(incoming_byte, header_bytes_found);
-        if(header_bytes_found == 3)
-        {
-            if(tracker == 0){
-                // Returns a pointer to the Leg array
-                // (initially contains empty Leg objects)
-                expected_length = findLength(incoming_byte) * 3;
-                legs_ptr = this->findFlags(expected_length / 3, incoming_byte);
-            }
-            else if(incoming_byte == TERMINAL_CHAR)
+        if(Serial.available()) {
+            uint8_t incoming_byte = Serial.read();
+            Serial.write(incoming_byte);
+            // This function returns the number of header bytes found so far
+            header_bytes_found = this->findHeader(incoming_byte, header_bytes_found);
+            if(header_bytes_found == 3)
             {
-                // If the packet does not have expected length
-                if(tracker != expected_length){
-                    return;
+                if(tracker == 0){
+                    // Returns a pointer to the Leg array
+                    // (initially contains empty Leg objects)
+                    expected_length = findLength(incoming_byte) * 3;
+                    size_command_list = expected_length / 3;
+                    legs_ptr = this->findFlags(size_command_list, incoming_byte);
                 }
-                else{
-                    command_list = legs_ptr;
+                else if(incoming_byte == TERMINAL_CHAR)
+                {
+                    Serial.write(251);
+                    // If the packet does not have expected length
+                    if(tracker != expected_length){
+                        return 0;
+                    }
+                    else{
+                        command_list = legs_ptr;
+                        return 1;
+                    }
                 }
+                // If the packet length exceeds the expected
+                else if( tracker > expected_length){
+                    return 0;
+                }
+                if(tracker > 0){
+                    // This function updates the respective angle of the respective
+                    // leg, given by incoming_byte
+                    // The leg to be updated is given by 'floor(tracker / 3)'
+                    // The joint to be updated is given by 'tracker % 3'
+                    this->updateLeg(incoming_byte, tracker, legs_ptr);
+                }
+                // Increment tracker
+                tracker++;
             }
-            // If the packet length exceeds the expected
-            else if( tracker > expected_length){
-                return;
-            }
-            if(tracker > 0){
-                // This function updates the respective angle of the respective
-                // leg, given by incoming_byte
-                // The leg to be updated is given by 'floor(tracker / 3)'
-                // The joint to be updated is given by 'tracker % 3'
-                this->updateLeg(incoming_byte, tracker, legs_ptr);
-            }
-            // Increment tracker
-            tracker++;
         }
     }
+    return 0;
 }
 
 uint8_t PacketHandler::findHeader(uint8_t incoming_byte, uint8_t header_bytes_found)
@@ -125,11 +128,14 @@ uint8_t PacketHandler::findLength(uint8_t incoming_byte)
     return counter;
 }
 
+void PacketHandler::simulate_commands() {
+    for(uint8_t i = 0; i < size_command_list; i++) {
+        command_list[i]->simulate_actuate();
+    }
+}
+
 void PacketHandler::updateLeg(uint8_t incoming_byte, uint8_t tracker, Leg** legs_ptr)
 {
-    /*
-
-    */
     uint8_t index = tracker - 1;
     if(index % 3 == 0){
         legs_ptr[index/3]->setShoulder(incoming_byte);

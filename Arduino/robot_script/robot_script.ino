@@ -16,6 +16,7 @@ Servo shoulder[6];
 Servo elbow[6];
 Servo foot[6];
 
+uint8_t packet_received;
 PacketHandler handler;
 
 void setup() {
@@ -36,6 +37,10 @@ void setup() {
 }
 
 void loop() {
+
   // put your main code here, to run repeatedly:
-  handler.receive();
+  packet_received = handler.receive();
+  if(packet_received == 1) {
+      handler.simulate_commands();
+  }
 }

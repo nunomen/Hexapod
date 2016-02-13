@@ -21,6 +21,7 @@ class Packet:
             vec = self.legs[leg].angles()
             for angle in vec:
                 pack += chr(angle)
+        pack += chr(233)
         self.data = pack
 
     def __repr__(self):
