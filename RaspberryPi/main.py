@@ -23,15 +23,14 @@ def main(args):
     leg_5.set_angles(32, 20, 90)
 
     sample_packet.set_leg(1, leg_1)
-    sample_packet.set_leg(2, leg_2)
-    sample_packet.set_leg(3, leg_3)
-    sample_packet.set_leg(4, leg_4)
-    sample_packet.set_leg(5, leg_5)
+    sample_packet.set_leg(3, leg_2)
+    sample_packet.set_leg(4, leg_3)
+    sample_packet.set_leg(5, leg_4)
+    sample_packet.set_leg(6, leg_5)
 
     sample_packet.make_packet()
 
     # TODO Make a rule on raspberry pi for Arduino, so that the port always stays the same.
-    #port = 'COM3'
     # Configure the baud rate of the connection.
     baud_rate = 9600
 
@@ -64,7 +63,20 @@ def main(args):
                 if current_time - start_time < 60:
                     incoming_byte = ser.read()
                     if incoming_byte:
-                        print(ord(incoming_byte))
+                        if ord(incoming_byte) == 253:
+                            print('[Log]: Received valid packet.')
+                        elif ord(incoming_byte) == 251:
+                            print('[Log]: Detected terminal character.')
+                        elif ord(incoming_byte) == 252:
+                            print('[Warning]: Exceeded possible packet size.')
+                        elif ord(incoming_byte) >= 200 and ord(incoming_byte) <= 216 :
+                            print('[Log]: Byte ' + str(ord(incoming_byte) - 200) + ':')
+                        elif ord(incoming_byte) == 222:
+                            print('[Log]: First or third initiation character found.')
+                        elif ord(incoming_byte) == 230:
+                            print('[Log]: Second initiation character found.')
+                        else:
+                            print(ord(incoming_byte))
                 else:
                     ser.close()
                     return

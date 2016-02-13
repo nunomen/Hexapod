@@ -46,14 +46,14 @@ uint8_t PacketHandler::receive()
                 else if(incoming_byte == TERMINAL_CHAR)
                 {
                     // If the packet does not have expected length
-                    Serial.write(251); // TODO delete after testing!
+                    Serial.write(251);
                     if(tracker != expected_length + 1){
-                        Serial.write(252); // TODO delete after testing!
+                        Serial.write(252);
                         return 0;
                     }
                     else{
                         command_list = legs;
-                        Serial.write(253); // TODO delete after testing!
+                        Serial.write(253); 
                         return 1;
                     }
                 }
