@@ -27,6 +27,7 @@ void PacketHandler::receive()
     while(Serial.available() && !terminal_found)
     {
         uint8_t incoming_byte = Serial.read();
+        Serial.write(incoming_byte);
         // This function returns the number of header bytes found so far
         header_bytes_found = this->findHeader(incoming_byte, header_bytes_found);
         if(header_bytes_found == 3)
@@ -45,7 +46,6 @@ void PacketHandler::receive()
                 }
                 else{
                     command_list = legs_ptr;
-                    Serial.println("[LOG]: Packet arrived successfully.");
                 }
             }
             // If the packet length exceeds the expected

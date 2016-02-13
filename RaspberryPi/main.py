@@ -1,4 +1,4 @@
-from packet import Packet
+from Packet import Packet
 from robot.leg import Leg
 from serial.tools import list_ports
 from serial import Serial, SerialException
@@ -51,11 +51,15 @@ def main(args):
             ser = Serial(port[0], baud_rate, timeout=2)
             sleep(3)  # wait for the device to be ready
             # send hello command
-
             for character in str(sample_packet):
-                print(character, ord(character))
-                ser.write(ord(character))
-                sleep(1)
+                ser.write(bytes([ord(character)]))
+                print(ord(bytes([ord(character)])))
+
+            print("------------------------")
+
+            while True:
+                print(ord(ser.read()))
+
 
         except SerialException:
             # print("opening serial failed")
