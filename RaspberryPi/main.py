@@ -52,11 +52,12 @@ def main(args):
             start_time = int(round(time()))
             sleep(3)  # wait for the device to be ready
             # send hello command
+            print("------------------------ WRITING INFORMATION TO ARDUINO ------------------------")
             for character in str(sample_packet):
                 ser.write(bytes([ord(character)]))
                 print(ord(bytes([ord(character)])))
 
-            print("------------------------")
+            print("------------------------ RECEIVED INFORMATION FROM ARDUINO ------------------------")
 
             while True:
                 current_time = int(round(time()))

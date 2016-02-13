@@ -14,6 +14,10 @@ Leg::~Leg() {
 
 }
 
+uint8_t Leg::getID() {
+	return leg_id;
+}
+
 void Leg::setFoot(uint8_t angle) {
 	foot_angle = angle;
 }

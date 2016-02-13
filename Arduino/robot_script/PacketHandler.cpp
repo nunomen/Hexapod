@@ -28,7 +28,6 @@ uint8_t PacketHandler::receive()
             Serial.write(incoming_byte);
             // This function returns the number of header bytes found so far
             header_bytes_found = this->findHeader(incoming_byte, header_bytes_found);
-            // Serial.write(header_bytes_found);
             if(header_bytes_found == 4)
             {
                 if(tracker == 0){
@@ -41,7 +40,6 @@ uint8_t PacketHandler::receive()
                         legs[i] = NULL;
                     }
                     this->findFlags(legs, incoming_byte);
-
                 }
                 else if(incoming_byte == TERMINAL_CHAR)
                 {
@@ -53,7 +51,7 @@ uint8_t PacketHandler::receive()
                     }
                     else{
                         command_list = legs;
-                        Serial.write(253); 
+                        Serial.write(253);
                         return 1;
                     }
                 }
@@ -66,7 +64,7 @@ uint8_t PacketHandler::receive()
                     // leg, given by incoming_byte
                     // The leg to be updated is given by 'floor(tracker / 3)'
                     // The joint to be updated is given by 'tracker % 3'
-                    Serial.write(200+tracker);
+                    Serial.write(200 + tracker);
                     this->updateLeg(incoming_byte, tracker, legs);
                 }
                 // Increment tracker

@@ -21,6 +21,8 @@ class Leg{
 
 		~Leg(); //Destructor of the Leg class
 
+		uint8_t getID();
+
 		uint8_t getFoot();
 
 		uint8_t getElbow();
