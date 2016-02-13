@@ -28,11 +28,14 @@ uint8_t PacketHandler::receive()
             Serial.write(incoming_byte);
             // This function returns the number of header bytes found so far
             header_bytes_found = this->findHeader(incoming_byte, header_bytes_found);
-            if(header_bytes_found == 3)
+            // Serial.write(header_bytes_found);
+            if(header_bytes_found == 4)
             {
                 if(tracker == 0){
                     // Returns a pointer to the Leg array
                     // (initially contains empty Leg objects)
+                    Serial.write(200);
+
                     expected_length = findLength(incoming_byte) * 3;
                     size_command_list = expected_length / 3;
                     legs_ptr = this->findFlags(size_command_list, incoming_byte);
@@ -57,6 +60,7 @@ uint8_t PacketHandler::receive()
                     // leg, given by incoming_byte
                     // The leg to be updated is given by 'floor(tracker / 3)'
                     // The joint to be updated is given by 'tracker % 3'
+                    Serial.write(200+tracker);
                     this->updateLeg(incoming_byte, tracker, legs_ptr);
                 }
                 // Increment tracker
@@ -75,9 +79,13 @@ uint8_t PacketHandler::findHeader(uint8_t incoming_byte, uint8_t header_bytes_fo
     It should return the header bytes found if everything runs as expected, and
     -1 otherwise.
     */
+    if(header_bytes_found == 4)
+    {
+        return 4;
+    }
     if(header_bytes_found == 3)
     {
-        return 3;
+        return 4;
     }
     else if(header_bytes_found == 0 && incoming_byte == FIRST_CHAR)
     {
@@ -103,7 +111,7 @@ Leg** PacketHandler::findFlags(uint8_t length, uint8_t incoming_byte)
     */
     Leg* legs[length];
     for(int i = 0; i < 8; i++){
-        if(incoming_byte & (1 << i) != 0){
+        if((incoming_byte & (1 << i)) != 0){
             // Create Leg object with id=i and insert it into the legs array.
             Leg myleg(i);
             legs[i] = &myleg;
@@ -120,7 +128,7 @@ uint8_t PacketHandler::findLength(uint8_t incoming_byte)
     */
     uint8_t counter = 0;
     for(int i = 0; i < 8; i++){
-        if(incoming_byte & (1 << i) != 0){
+        if((incoming_byte & (1 << i)) != 0){
             counter++;
         }
     }
