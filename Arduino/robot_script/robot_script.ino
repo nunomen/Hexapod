@@ -41,6 +41,7 @@ void loop() {
   // put your main code here, to run repeatedly:
   packet_received = handler.receive();
   if(packet_received == 1) {
+      Serial.write(234); // TODO remove after testing
       handler.simulate_commands();
   }
 }

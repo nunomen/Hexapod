@@ -67,6 +67,7 @@ def main(args):
                         print(ord(incoming_byte))
                 else:
                     ser.close()
+                    return
 
 
         except SerialException:

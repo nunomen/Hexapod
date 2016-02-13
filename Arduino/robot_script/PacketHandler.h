@@ -17,9 +17,10 @@ class PacketHandler
         uint8_t findHeader(uint8_t current_byte, uint8_t header_bytes_found);
         Leg** command_list;
         uint8_t size_command_list;
-        Leg** findFlags(uint8_t length, uint8_t incoming_byte);
+        Leg** findFlags(Leg** legs, uint8_t incoming_byte);
         uint8_t findLength(uint8_t incoming_byte);
         void updateLeg(uint8_t incoming_byte, uint8_t tracker, Leg** legs_ptr);
+        Leg* legs[6];
 };
 
 #endif
