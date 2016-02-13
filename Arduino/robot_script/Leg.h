@@ -21,6 +21,14 @@ class Leg{
 
 		~Leg(); //Destructor of the Leg class
 
+		uint8_t getFoot();
+
+		uint8_t getElbow();
+
+		uint8_t getShoulder();
+
+		void simulate_actuate();
+
 		void setFoot(uint8_t angle);
 
 		void setElbow(uint8_t angle);

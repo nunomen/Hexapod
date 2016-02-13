@@ -3,6 +3,8 @@
 #include "Leg.h"
 #include <stdint.h>
 
+#define SERIAL_ID 190
+
 // Class constructor of the packet.
 Leg::Leg(uint8_t id) {
 	leg_id = id;
@@ -22,6 +24,25 @@ void Leg::setElbow(uint8_t angle) {
 
 void Leg::setShoulder(uint8_t angle) {
 	shoulder_angle = angle;
+}
+
+uint8_t Leg::getFoot() {
+	return foot_angle;
+}
+
+uint8_t Leg::getElbow() {
+	return elbow_angle;
+}
+
+uint8_t Leg::getShoulder() {
+	return shoulder_angle;
+}
+
+void Leg::simulate_actuate() {
+	Serial.write(SERIAL_ID + leg_id);
+	Serial.write(shoulder_angle);
+	Serial.write(elbow_angle);
+	Serial.write(foot_angle);
 }
 
 void Leg::actuate(Servo *shoulder_servo, Servo *elbow_servo, Servo *foot_servo) {

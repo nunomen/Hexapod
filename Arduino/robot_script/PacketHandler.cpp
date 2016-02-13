@@ -39,7 +39,6 @@ uint8_t PacketHandler::receive()
                 }
                 else if(incoming_byte == TERMINAL_CHAR)
                 {
-                    Serial.write(251);
                     // If the packet does not have expected length
                     if(tracker != expected_length){
                         return 0;
