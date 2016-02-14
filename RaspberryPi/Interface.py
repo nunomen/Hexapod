@@ -8,10 +8,10 @@ Texto adicional: Adicionar mais widgets
 				 Talvez de para melhorar a temporalidade dos metodos.
 """
 
-import sys, Packet, serial
+import sys, packet, serial
 from PySide import QtCore, QtGui
 
-pacote = Packet.Packet()
+pacote = packet.Packet()
 patas = {}
 
 class Widget(QtGui.QWidget):
@@ -108,7 +108,7 @@ class Widget(QtGui.QWidget):
                 ang1 = x.children()[2].intValue()
                 ang2 = x.children()[4].intValue()
                 ang3 = x.children()[6].intValue()
-                patas[i] = Packet.Leg()
+                patas[i] = packet.Leg()
                 patas[i].setAngles(ang1, ang2, ang3)
                 pacote.setLeg(i+1, patas[i])
             i += 1
