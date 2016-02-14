@@ -15,18 +15,21 @@ def main(args):
     leg_3 = Leg()
     leg_4 = Leg()
     leg_5 = Leg()
+    leg_6 = Leg()
 
     leg_1.set_angles(30, 20, 20)
     leg_2.set_angles(45, 60, 130)
     leg_3.set_angles(30, 43, 31)
     leg_4.set_angles(19, 41, 42)
     leg_5.set_angles(32, 20, 90)
+    leg_6.set_angles(53, 67, 89)
 
     sample_packet.set_leg(1, leg_1)
-    sample_packet.set_leg(3, leg_2)
-    sample_packet.set_leg(4, leg_3)
-    sample_packet.set_leg(5, leg_4)
-    sample_packet.set_leg(6, leg_5)
+    sample_packet.set_leg(2, leg_2)
+    sample_packet.set_leg(3, leg_3)
+    sample_packet.set_leg(4, leg_4)
+    sample_packet.set_leg(5, leg_5)
+    sample_packet.set_leg(6, leg_6)
 
     sample_packet.make_packet()
 
@@ -43,7 +46,7 @@ def main(args):
             baud_rate = args[i+1]
         elif mode == '-p':
             print('[LOG]: The Arduino port was set to ' + args[i+1])
-            port = args[i+1]
+            # port = args[i+1]
 
     for port in (list_ports.comports()):
         print(port[0])
@@ -70,25 +73,28 @@ def main(args):
                             print('[Log]: Detected terminal character.')
                         elif ord(incoming_byte) == 252:
                             print('[Warning]: Exceeded possible packet size.')
-                        elif ord(incoming_byte) >= 200 and ord(incoming_byte) <= 216 :
+                        elif 200 <= ord(incoming_byte) <= 218:
                             print('[Log]: Byte ' + str(ord(incoming_byte) - 200) + ':')
                         elif ord(incoming_byte) == 222:
                             print('[Log]: First or third initiation character found.')
                         elif ord(incoming_byte) == 230:
                             print('[Log]: Second initiation character found.')
+                        elif 190 <= ord(incoming_byte) <= 195:
+                            print('[Log]: Simulating Leg ' + str(ord(incoming_byte) - 190) + ' actuation.')
+                        elif ord(incoming_byte) == 233:
+                            print('[Log]: Termination byte found.')
+                        elif ord(incoming_byte) == 249:
+                            print('[WARNING]: Servo amplitude range exceeded. Setting it to the established limit.')
                         else:
                             print(ord(incoming_byte))
                 else:
                     ser.close()
                     return
 
-
         except SerialException:
             # print("opening serial failed")
             print("[ERROR]: Connection Failure.")
             pass
-
-
 
 if __name__ == "__main__":
     main(argv)

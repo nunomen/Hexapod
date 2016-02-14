@@ -5,6 +5,13 @@
 
 #define SERIAL_ID 190
 
+#define SHOULDER_LEFT_LIM 30
+#define SHOULDER_RIGHT_LIM 150
+#define ELBOW_UPPER_LIM 15
+#define ELBOW_LOWER_LIM 165
+#define FOOT_UPPER_LIM 165
+#define FOOT_LOWER_LIM 20
+
 // Class constructor of the packet.
 Leg::Leg(uint8_t id) {
 	leg_id = id;
@@ -19,15 +26,45 @@ uint8_t Leg::getID() {
 }
 
 void Leg::setFoot(uint8_t angle) {
-	foot_angle = angle;
+	if(angle < FOOT_LOWER_LIM){
+		foot_angle = FOOT_LOWER_LIM;
+		Serial.write(249);
+	}
+	else if(angle > FOOT_UPPER_LIM) {
+		foot_angle = FOOT_UPPER_LIM;
+		Serial.write(249);
+	}
+	else {
+		foot_angle = angle;
+	}
 }
 
 void Leg::setElbow(uint8_t angle) {
-	elbow_angle = angle;
+	if(angle < ELBOW_UPPER_LIM) {
+		elbow_angle = ELBOW_UPPER_LIM;
+		Serial.write(249);
+	}
+	else if(angle > ELBOW_LOWER_LIM) {
+		elbow_angle = ELBOW_LOWER_LIM;
+		Serial.write(249);
+	}
+	else {
+		elbow_angle = angle;
+	}
 }
 
 void Leg::setShoulder(uint8_t angle) {
-	shoulder_angle = angle;
+	if(angle < SHOULDER_LEFT_LIM) {
+		shoulder_angle = SHOULDER_LEFT_LIM;
+		Serial.write(249);
+	}
+	else if(angle > SHOULDER_RIGHT_LIM) {
+		shoulder_angle = SHOULDER_RIGHT_LIM;
+		Serial.write(249);
+	}
+	else {
+		shoulder_angle = angle;
+	}
 }
 
 uint8_t Leg::getFoot() {

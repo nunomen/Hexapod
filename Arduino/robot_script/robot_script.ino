@@ -4,10 +4,6 @@ const uint8_t shoulder_pins[] = { 44, 34, 42, 36, 40, 38 };
 const uint8_t elbow_pins[] = { 48, 30, 43, 37, 46, 32 };
 const uint8_t foot_pins[] = { 44, 34, 42, 36, 40, 38 };
 
-#define SHOULDER_HOME 90
-#define ELBOW_HOME 90
-#define FOOT_HOME 125
-
 #define SHOULDER_DEF_1 70
 #define ELBOW_DEF_1 70
 #define FOOT_DEF_1 70
@@ -42,5 +38,6 @@ void loop() {
   packet_received = handler.receive();
   if(packet_received == 1) {
       handler.simulate_commands();
+      packet_received = 0;
   }
 }

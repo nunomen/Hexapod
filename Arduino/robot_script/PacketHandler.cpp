@@ -19,8 +19,6 @@ uint8_t PacketHandler::receive()
     uint8_t expected_length = 0;
     unsigned long start_time = millis();
 
-    //Leg** legs_ptr;
-
     while(!terminal_found && millis() - start_time < TIMEOUT)
     {
         if(Serial.available()) {
@@ -35,7 +33,6 @@ uint8_t PacketHandler::receive()
                     // (initially contains empty Leg objects)
                     Serial.write(200);
                     expected_length = findLength(incoming_byte) * 3;
-                    size_command_list = expected_length / 3;
                     for(int i = 0; i < 6; i++){
                         legs[i] = NULL;
                     }
@@ -138,8 +135,10 @@ uint8_t PacketHandler::findLength(uint8_t incoming_byte)
 }
 
 void PacketHandler::simulate_commands() {
-    for(uint8_t i = 0; i < size_command_list; i++) {
-        command_list[i]->simulate_actuate();
+    for(uint8_t i = 0; i < 6; i++) {
+        if(command_list[i] != NULL) {
+            command_list[i]->simulate_actuate();
+        }
     }
 }
 
