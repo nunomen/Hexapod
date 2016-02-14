@@ -68,21 +68,21 @@ def main(args):
                     incoming_byte = ser.read()
                     if incoming_byte:
                         if ord(incoming_byte) == 253:
-                            print('[Log]: Received valid packet.')
+                            print('[LOG]: Received valid packet.')
                         elif ord(incoming_byte) == 251:
-                            print('[Log]: Detected terminal character.')
+                            print('[LOG]: Detected terminal character.')
                         elif ord(incoming_byte) == 252:
-                            print('[Warning]: Exceeded possible packet size.')
+                            print('[WARNING]: Exceeded possible packet size.')
                         elif 200 <= ord(incoming_byte) <= 218:
-                            print('[Log]: Byte ' + str(ord(incoming_byte) - 200) + ':')
+                            print('[LOG]: Byte ' + str(ord(incoming_byte) - 200) + ':')
                         elif ord(incoming_byte) == 222:
-                            print('[Log]: First or third initiation character found.')
+                            print('[LOG]: First or third initiation character found.')
                         elif ord(incoming_byte) == 230:
-                            print('[Log]: Second initiation character found.')
+                            print('[LOG]: Second initiation character found.')
                         elif 190 <= ord(incoming_byte) <= 195:
-                            print('[Log]: Simulating Leg ' + str(ord(incoming_byte) - 190) + ' actuation.')
+                            print('[LOG]: Simulating Leg ' + str(ord(incoming_byte) - 190) + ' actuation.')
                         elif ord(incoming_byte) == 233:
-                            print('[Log]: Termination byte found.')
+                            print('[LOG]: Termination byte found.')
                         elif ord(incoming_byte) == 249:
                             print('[WARNING]: Servo amplitude range exceeded. Setting it to the established limit.')
                         else:
