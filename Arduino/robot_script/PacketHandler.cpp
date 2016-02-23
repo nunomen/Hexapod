@@ -33,9 +33,7 @@ uint8_t PacketHandler::receive()
                     // (initially contains empty Leg objects)
                     Serial.write(200);
                     expected_length = findLength(incoming_byte) * 3;
-                    for(int i = 0; i < 6; i++){
-                        legs[i] = NULL;
-                    }
+                    this->resetCommands();
                     this->findFlags(legs, incoming_byte);
                 }
                 else if(incoming_byte == TERMINAL_CHAR)
@@ -46,7 +44,7 @@ uint8_t PacketHandler::receive()
                         Serial.write(252);
                         return 0;
                     }
-                    else{
+                    else {
                         command_list = legs;
                         Serial.write(253);
                         return 1;
@@ -70,6 +68,13 @@ uint8_t PacketHandler::receive()
         }
     }
     return 0;
+}
+
+void PacketHandler::resetCommands() {
+    for(int i = 0; i < 6; i++){
+        legs[i] = NULL;
+    }
+    command_list = NULL;
 }
 
 uint8_t PacketHandler::findHeader(uint8_t incoming_byte, uint8_t header_bytes_found)

@@ -26,9 +26,9 @@ def main(args):
 
     sample_packet.set_leg(1, leg_1)
     sample_packet.set_leg(2, leg_2)
-    sample_packet.set_leg(3, leg_3)
+    # sample_packet.set_leg(3, leg_3)
     sample_packet.set_leg(4, leg_4)
-    sample_packet.set_leg(5, leg_5)
+    # sample_packet.set_leg(5, leg_5)
     sample_packet.set_leg(6, leg_6)
 
     sample_packet.make_packet()
@@ -64,7 +64,7 @@ def main(args):
 
             while True:
                 current_time = int(round(time()))
-                if current_time - start_time < 60:
+                if current_time - start_time < 8:
                     incoming_byte = ser.read()
                     if incoming_byte:
                         if ord(incoming_byte) == 253:

@@ -16,7 +16,6 @@ uint8_t packet_received;
 PacketHandler handler;
 
 void setup() {
-  // put your setup code here, to run once:
   Serial.begin(9600);
   for(int leg = 0; leg < 6; leg++){
     shoulder[leg].attach(shoulder_pins[leg]);
@@ -33,8 +32,6 @@ void setup() {
 }
 
 void loop() {
-
-  // put your main code here, to run repeatedly:
   packet_received = handler.receive();
   if(packet_received == 1) {
       handler.simulate_commands();
