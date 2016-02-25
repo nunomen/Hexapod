@@ -3,11 +3,11 @@
 
 const uint8_t shoulder_pins[] = { 44, 34, 42, 36, 40, 38 };
 const uint8_t elbow_pins[] = { 48, 30, 43, 37, 46, 32 };
-const uint8_t foot_pins[] = { 44, 34, 42, 36, 40, 38 };
+const uint8_t foot_pins[] = { 52, 26, 41, 39, 50, 28 };
 
-#define GND 7
-#define VCC 5
-#define RELAY 6
+//#define GND 7
+//#define VCC 5
+//#define RELAY 6
 
 #define SHOULDER_DEF_1 70
 #define ELBOW_DEF_1 70
@@ -15,22 +15,22 @@ const uint8_t foot_pins[] = { 44, 34, 42, 36, 40, 38 };
 
 Servo shoulder[6];
 Servo elbow[6];
+//Servo other[6];
 Servo foot[6];
-Servo other[6];
+
 
 uint8_t packet_received;
 PacketHandler handler;
 
 void setup() {
-  pinMode(GND, OUTPUT);
-  pinMode(VCC, OUTPUT);
-  pinMode(RELAY, OUTPUT);
-  digitalWrite(VCC, HIGH);
-  digitalWrite(GND, LOW);
-  digitalWrite(RELAY, HIGH);
-  delay(1000);
-  digitalWrite(RELAY, LOW);
-
+  //pinMode(GND, OUTPUT);
+  //pinMode(VCC, OUTPUT);
+  //pinMode(RELAY, OUTPUT);
+  //digitalWrite(VCC, HIGH);
+  //digitalWrite(GND, LOW);
+  //digitalWrite(RELAY, HIGH);
+  //delay(1000);
+  //digitalWrite(RELAY, LOW);
   Serial.begin(9600);
   for(int leg = 0; leg < 6; leg++){
     shoulder[leg].attach(shoulder_pins[leg]);
@@ -42,14 +42,13 @@ void setup() {
     shoulder[leg].write(SHOULDER_DEF_1);
     elbow[leg].write(ELBOW_DEF_1);
     foot[leg].write(FOOT_DEF_1);
-    delay(500);
   }
 }
 
 void loop() {
   packet_received = handler.receive();
   if(packet_received == 1) {
-      //handler.simulate_commands();
+      handler.simulate_commands();
       Leg** command_list = handler.getCommands();
       actuate(command_list);
       packet_received = 0;
