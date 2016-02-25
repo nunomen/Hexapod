@@ -147,6 +147,10 @@ void PacketHandler::simulate_commands() {
     }
 }
 
+Leg** PacketHandler::getCommands() {
+    return command_list;
+}
+
 void PacketHandler::updateLeg(uint8_t incoming_byte, uint8_t tracker, Leg** legs)
 {
     uint8_t index = tracker - 1;
