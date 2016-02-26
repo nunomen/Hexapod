@@ -5,17 +5,20 @@ const uint8_t shoulder_pins[] = { 44, 34, 42, 36, 40, 38 };
 const uint8_t elbow_pins[] = { 48, 30, 43, 37, 46, 32 };
 const uint8_t foot_pins[] = { 52, 26, 41, 39, 50, 28 };
 
+const int8_t shoulder_offsets[] = { 0, 0, 0, 0, 0, 0 };
+const int8_t elbow_offsets[] = { -5, 5, -5, -5, 0, 0 };
+const int8_t foot_offsets[] = { 0, 0, 0, 15, 0, 0 };
+
 //#define GND 7
 //#define VCC 5
 //#define RELAY 6
 
-#define SHOULDER_DEF_1 70
-#define ELBOW_DEF_1 70
-#define FOOT_DEF_1 70
+#define SHOULDER_HOME 90
+#define ELBOW_HOME 100
+#define FOOT_HOME 120
 
 Servo shoulder[6];
 Servo elbow[6];
-//Servo other[6];
 Servo foot[6];
 
 
@@ -39,9 +42,9 @@ void setup() {
   }
   delay(1000);
   for(int leg = 0; leg < 6; leg++){
-    shoulder[leg].write(SHOULDER_DEF_1);
-    elbow[leg].write(ELBOW_DEF_1);
-    foot[leg].write(FOOT_DEF_1);
+    shoulder[leg].write(SHOULDER_HOME + shoulder_offsets[leg]);
+    elbow[leg].write(ELBOW_HOME + elbow_offsets[leg]);
+    foot[leg].write(FOOT_HOME + foot_offsets[leg]);
   }
 }
 
@@ -61,6 +64,7 @@ void actuate(Leg** command_list) {
       if(command_list[i] != NULL) {
         uint8_t id = command_list[i]->getID();
         // Actuate servos corresponding to leg id
+        command_list[i]->addOffset(shoulder_offsets[id], elbow_offsets[id], foot_offsets[id]);
         command_list[i]->actuate(&shoulder[id],&elbow[id],&foot[id]);
       }
   }

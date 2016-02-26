@@ -91,3 +91,9 @@ void Leg::actuate(Servo *shoulder_servo, Servo *elbow_servo, Servo *foot_servo) 
 	elbow_servo->write(elbow_angle);
 	foot_servo->write(foot_angle);
 }
+
+void Leg::addOffset(uint8_t shoulder_off, uint8_t elbow_off, uint8_t foot_off) {
+	shoulder_angle += shoulder_off;
+	elbow_angle += elbow_off;
+	foot_angle += foot_off;
+}
