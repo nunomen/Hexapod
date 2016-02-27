@@ -38,6 +38,8 @@ class Leg{
 		void setShoulder(uint8_t angle);
 
 		void actuate(Servo *shoulder_servo, Servo *elbow_servo, Servo *foot_servo);
+
+		void addOffset(uint8_t shoulder_off, uint8_t elbow_off, uint8_t foot_off);
 };
 
 #endif
