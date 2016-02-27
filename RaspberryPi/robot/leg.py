@@ -7,7 +7,7 @@ class Leg:
         self.data = []
 
     def set_angles(self, coxa, femur, tibia):
-        self.data.extend([coxa, femur, tibia])
+        self.data = [coxa, femur, tibia]
 
     def angles(self):
         return self.data

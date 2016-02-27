@@ -1,5 +1,6 @@
 from Packet import Packet
 from robot.leg import Leg
+from robot.state import State
 from serial.tools import list_ports
 from serial import Serial, SerialException
 from sys import argv
@@ -7,30 +8,8 @@ from time import sleep, time
 
 
 def main(args):
-    sample_packet = Packet()
 
-    leg_1 = Leg()
-    leg_2 = Leg()
-    leg_3 = Leg()
-    leg_4 = Leg()
-    leg_5 = Leg()
-    leg_6 = Leg()
-
-    leg_1.set_angles(90, 100, 120)
-    leg_2.set_angles(90, 100, 120)
-    leg_3.set_angles(90, 100, 120)
-    leg_4.set_angles(90, 100, 120)
-    leg_5.set_angles(90, 100, 120)
-    leg_6.set_angles(90, 100, 120)
-
-    sample_packet.set_leg(1, leg_1)
-    sample_packet.set_leg(2, leg_2)
-    sample_packet.set_leg(3, leg_3)
-    sample_packet.set_leg(4, leg_4)
-    sample_packet.set_leg(5, leg_5)
-    sample_packet.set_leg(6, leg_6)
-
-    sample_packet.make_packet()
+    current_state = State()
 
     # TODO Make a rule on raspberry pi for Arduino, so that the port always stays the same.
     # Configure the baud rate of the connection.
@@ -55,7 +34,8 @@ def main(args):
             ser = Serial(port[0], baud_rate, timeout=2)
             sleep(3)  # wait for the device to be ready
 
-            send_packet(sample_packet, ser)
+            packet_list = current_state.home()
+            send_packet(packet_list[0], ser)
 
             incoming_byte = ser.read()
 
@@ -71,12 +51,23 @@ def main(args):
                     debug = True
                     print("[LOG]: Debug mode activated.")
 
+                elif len(words) > 0 and words[0] == 'ddebug':
+                    debug = False
+                    print("[LOG]: Debug mode deactivated.")
+
                 elif len(words) == 5 and words[0] == 'leg':
-                    new_leg = Leg()
-                    new_leg.set_angles(int(words[2]), int(words[3]), int(words[4]))
-                    sample_packet.set_leg(int(words[1]), new_leg)
-                    sample_packet.make_packet()
-                    send_packet(sample_packet, ser)
+                    packet_list = current_state.user_state(int(words[1]), int(words[2]), int(words[3]), int(words[4]))
+                    send_packet(packet_list[0], ser)
+
+                elif len(words) > 0 and words[0] == 'storage':
+                    print("[LOG]: Hexapod is preparing himself to be packed.")
+                    packet_list = current_state.storage()
+                    send_packet(packet_list[0], ser)
+
+                elif len(words) > 0 and words[0] == 'home':
+                    print("[LOG]: Default leg position.")
+                    packet_list = current_state.home()
+                    send_packet(packet_list[0], ser)
 
                 elif len(words) > 0 and words[0] == 'off':
                     print("[LOG]: Hexapod is shuting down.")
