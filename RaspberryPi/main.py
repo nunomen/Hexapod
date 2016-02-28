@@ -1,46 +1,26 @@
 from Packet import Packet
 from robot.leg import Leg
+from robot.state import State
 from serial.tools import list_ports
 from serial import Serial, SerialException
 from sys import argv
-from time import sleep
-from time import time
+from time import sleep, time
 
 
 def main(args):
-    sample_packet = Packet()
 
-    leg_1 = Leg()
-    leg_2 = Leg()
-    leg_3 = Leg()
-    leg_4 = Leg()
-    leg_5 = Leg()
-    leg_6 = Leg()
-
-    leg_1.set_angles(30, 20, 20)
-    leg_2.set_angles(45, 60, 130)
-    leg_3.set_angles(30, 43, 31)
-    leg_4.set_angles(19, 41, 42)
-    leg_5.set_angles(32, 20, 90)
-    leg_6.set_angles(53, 67, 89)
-
-    sample_packet.set_leg(1, leg_1)
-    sample_packet.set_leg(2, leg_2)
-    sample_packet.set_leg(3, leg_3)
-    sample_packet.set_leg(4, leg_4)
-    sample_packet.set_leg(5, leg_5)
-    sample_packet.set_leg(6, leg_6)
-
-    sample_packet.make_packet()
+    current_state = State()
 
     # TODO Make a rule on raspberry pi for Arduino, so that the port always stays the same.
     # Configure the baud rate of the connection.
     baud_rate = 9600
+    debug = False
 
     for i in range(len(args)):
         mode = args[i]
         if mode == '-d':
             print('[LOG]: This program is in debug mode.')
+            debug = True
         elif mode == '-br':
             print('[LOG]: The baud rate is set to ' + args[i+1])
             baud_rate = args[i+1]
@@ -52,49 +32,84 @@ def main(args):
         print(port[0])
         try:
             ser = Serial(port[0], baud_rate, timeout=2)
-            start_time = int(round(time()))
             sleep(3)  # wait for the device to be ready
-            # send hello command
-            print("------------------------ WRITING INFORMATION TO ARDUINO ------------------------")
-            for character in str(sample_packet):
-                ser.write(bytes([ord(character)]))
-                print(ord(bytes([ord(character)])))
 
-            print("------------------------ RECEIVED INFORMATION FROM ARDUINO ------------------------")
+            packet_list = current_state.home()
+            send_packet(packet_list[0], ser)
+
+            incoming_byte = ser.read()
+
+            # discard initial bytes
+            while incoming_byte:
+                incoming_byte = ser.read()
 
             while True:
-                current_time = int(round(time()))
-                if current_time - start_time < 60:
-                    incoming_byte = ser.read()
-                    if incoming_byte:
-                        if ord(incoming_byte) == 253:
-                            print('[LOG]: Received valid packet.')
-                        elif ord(incoming_byte) == 251:
-                            print('[LOG]: Detected terminal character.')
-                        elif ord(incoming_byte) == 252:
-                            print('[WARNING]: Exceeded possible packet size.')
-                        elif 200 <= ord(incoming_byte) <= 218:
-                            print('[LOG]: Byte ' + str(ord(incoming_byte) - 200) + ':')
-                        elif ord(incoming_byte) == 222:
-                            print('[LOG]: First or third initiation character found.')
-                        elif ord(incoming_byte) == 230:
-                            print('[LOG]: Second initiation character found.')
-                        elif 190 <= ord(incoming_byte) <= 195:
-                            print('[LOG]: Simulating Leg ' + str(ord(incoming_byte) - 190) + ' actuation.')
-                        elif ord(incoming_byte) == 233:
-                            print('[LOG]: Termination byte found.')
-                        elif ord(incoming_byte) == 249:
-                            print('[WARNING]: Servo amplitude range exceeded. Setting it to the established limit.')
-                        else:
-                            print(ord(incoming_byte))
-                else:
+                command = input(">> ")
+                words = command.split()
+
+                if len(words) > 0 and words[0] == 'debug':
+                    debug = True
+                    print("[LOG]: Debug mode activated.")
+
+                elif len(words) > 0 and words[0] == 'ddebug':
+                    debug = False
+                    print("[LOG]: Debug mode deactivated.")
+
+                elif len(words) == 5 and words[0] == 'leg':
+                    packet_list = current_state.user_state(int(words[1]), int(words[2]), int(words[3]), int(words[4]))
+                    send_packet(packet_list[0], ser)
+
+                elif len(words) > 0 and words[0] == 'storage':
+                    print("[LOG]: Hexapod is preparing himself to be packed.")
+                    packet_list = current_state.storage()
+                    send_packet(packet_list[0], ser)
+
+                elif len(words) > 0 and words[0] == 'home':
+                    print("[LOG]: Default leg position.")
+                    packet_list = current_state.home()
+                    send_packet(packet_list[0], ser)
+
+                elif len(words) > 0 and words[0] == 'off':
+                    print("[LOG]: Hexapod is shuting down.")
                     ser.close()
                     return
+
+                start_time = int(round(time()))
+                if debug is True:
+                    incoming_byte = ser.read()
+                    while int(round(time())) - start_time < 1 and incoming_byte:
+                        if incoming_byte:
+                            if ord(incoming_byte) == 253:
+                                print('[LOG]: Received valid packet.')
+                            elif ord(incoming_byte) == 251:
+                                print('[LOG]: Detected terminal character.')
+                            elif ord(incoming_byte) == 252:
+                                print('[WARNING]: Exceeded possible packet size.')
+                            elif 200 <= ord(incoming_byte) <= 218:
+                                print('[LOG]: Byte ' + str(ord(incoming_byte) - 200) + ':')
+                            elif ord(incoming_byte) == 222:
+                                print('[LOG]: First or third initiation character found.')
+                            elif ord(incoming_byte) == 230:
+                                print('[LOG]: Second initiation character found.')
+                            elif 190 <= ord(incoming_byte) <= 195:
+                                print('[LOG]: Simulating Leg ' + str(ord(incoming_byte) - 190) + ' actuation.')
+                            elif ord(incoming_byte) == 233:
+                                print('[LOG]: Termination byte found.')
+                            elif ord(incoming_byte) == 249:
+                                print('[WARNING]: Servo amplitude range exceeded. Setting it to the established limit.')
+                            else:
+                                print(ord(incoming_byte))
+                        incoming_byte = ser.read()
 
         except SerialException:
             # print("opening serial failed")
             print("[ERROR]: Connection Failure.")
             pass
+
+
+def send_packet(packet, serial):
+    for character in str(packet):
+        serial.write(bytes([ord(character)]))
 
 if __name__ == "__main__":
     main(argv)

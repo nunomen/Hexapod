@@ -12,6 +12,8 @@ class PacketHandler
         // queue. This should
         uint8_t receive();
         void simulate_commands();
+        void resetCommands();
+        Leg** getCommands();
 
     private:
         uint8_t findHeader(uint8_t current_byte, uint8_t header_bytes_found);
