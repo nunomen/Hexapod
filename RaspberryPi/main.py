@@ -15,7 +15,7 @@ def main(args):
     baud_rate = 9600
     debug = False
     packet_nr = 0
-    packet_period = 500
+    packet_period = 0.3
     last_packet_timestamp = 0
 
     for i in range(len(args)):
@@ -79,12 +79,12 @@ def main(args):
                 elif len(words) > 0 and words[0] == 'forward':
                     print("[LOG]: Hexapod is walking forward.")
                     packet_list = current_state.forward()
-
-                if time() - last_packet_timestamp >= packet_period:
-                    real_packet = packet_nr % len(packet_list)
-                    send_packet(packet_list[real_packet], ser)
-                    last_packet_timestamp = time()
-                    packet_nr += 1
+                    while True:
+                        if time() - last_packet_timestamp >= packet_period:
+                            real_packet = packet_nr % len(packet_list)
+                            send_packet(packet_list[real_packet], ser)
+                            last_packet_timestamp = time()
+                            packet_nr += 1
 
                 start_time = int(round(time()))
                 if debug is True:
