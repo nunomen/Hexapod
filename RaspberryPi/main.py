@@ -11,10 +11,12 @@ def main(args):
 
     current_state = State()
 
-    # TODO Make a rule on raspberry pi for Arduino, so that the port always stays the same.
     # Configure the baud rate of the connection.
     baud_rate = 9600
     debug = False
+    packet_nr = 0
+    packet_period = 0.3
+    last_packet_timestamp = 0
 
     for i in range(len(args)):
         mode = args[i]
@@ -73,6 +75,16 @@ def main(args):
                     print("[LOG]: Hexapod is shuting down.")
                     ser.close()
                     return
+
+                elif len(words) > 0 and words[0] == 'forward':
+                    print("[LOG]: Hexapod is walking forward.")
+                    packet_list = current_state.forward()
+                    while True:
+                        if time() - last_packet_timestamp >= packet_period:
+                            real_packet = packet_nr % len(packet_list)
+                            send_packet(packet_list[real_packet], ser)
+                            last_packet_timestamp = time()
+                            packet_nr += 1
 
                 start_time = int(round(time()))
                 if debug is True:
