@@ -1,28 +1,7 @@
 #include "PacketHandler.h"
 #include "Leg.h"
+#include "robot_constants.h"
 
-// Digital pins assigned to each servo of the robot.
-const uint8_t c_shoulder_pins[] = { 44, 34, 42, 36, 40, 38 };
-const uint8_t c_elbow_pins[] = { 48, 30, 43, 37, 46, 32 };
-const uint8_t c_foot_pins[] = { 52, 26, 41, 39, 50, 28 };
-
-// Calibration of servo motor offsets.
-const int8_t c_shoulder_offsets[] = { 0, 0, 0, 0, 0, 0 };
-const int8_t c_elbow_offsets[] = { -5, 5, -5, -5, 0, 0 };
-const int8_t c_foot_offsets[] = { 0, 0, 0, 15, 0, 0 };
-
-// Assigning origin angles for the servo motors.
-const uint8_t c_shoulder_home(90);
-const uint8_t c_elbow_home(100);
-const uint8_t c_foot_home(120);
-
-// Digital pins assigned to the relay.
-const uint8_t c_ground(7);
-const uint8_t c_vcc(5);
-const uint8_t c_relay_pin(6);
-
-// Change this constant to true if relay is supposed to be activated.
-const bool c_relay(false);
 
 // Servo objects for the robot joints.
 Servo shoulder[6];
@@ -33,24 +12,24 @@ uint8_t packet_received;
 PacketHandler handler;
 
 void setup() {
-  if(c_relay) activateRelay;
+  if(configs::c_relay) activateRelay;
 
   Serial.begin(9600);
 
   // Attach all the digital pins to the servos of the robot.
   for(int leg = 0; leg < 6; leg++){
-    shoulder[leg].attach(c_shoulder_pins[leg]);
-    elbow[leg].attach(c_elbow_pins[leg]);
-    foot[leg].attach(c_foot_pins[leg]);
+    shoulder[leg].attach(configs::c_shoulder_pins[leg]);
+    elbow[leg].attach(configs::c_elbow_pins[leg]);
+    foot[leg].attach(configs::c_foot_pins[leg]);
   }
   // Added a delay to prevent disasters while setting things up.
   delay(1000);
 
   // Send all servos to their home positions as a default power on procedure.
   for(int leg = 0; leg < 6; leg++){
-    shoulder[leg].write(c_shoulder_home + c_shoulder_offsets[leg]);
-    elbow[leg].write(c_elbow_home + c_elbow_offsets[leg]);
-    foot[leg].write(c_foot_home + c_foot_home[leg]);
+    shoulder[leg].write(configs::c_shoulder_home + configs::c_shoulder_offsets[leg]);
+    elbow[leg].write(configs::c_elbow_home + configs::c_elbow_offsets[leg]);
+    foot[leg].write(configs::c_foot_home + configs::c_foot_home[leg]);
   }
 }
 
@@ -66,6 +45,9 @@ void loop() {
 
 void activateRelay(){
   // Set the mode of the digital pins for the relay.
+  
+  using namespace configs;
+
   pinMode(c_ground, OUTPUT);
   pinMode(c_vcc, OUTPUT);
   pinMode(c_relay_pin, OUTPUT);
@@ -87,8 +69,9 @@ void actuate(Leg** command_list) {
       // If there is data for leg i
       if(command_list[i] != NULL) {
         uint8_t id = command_list[i]->getID();
+
         // Actuate servos corresponding to leg id
-        command_list[i]->addOffset(c_shoulder_offsets[id], c_elbow_offsets[id], c_foot_offsets[id]);
+        command_list[i]->addOffset(configs::c_shoulder_offsets[id], configs::c_elbow_offsets[id], configs::c_foot_offsets[id]);
         command_list[i]->actuate(&shoulder[id],&elbow[id],&foot[id]);
       }
   }
