@@ -1,13 +1,15 @@
 
 
-# Class leg will be moved to the kinematics package
 class Leg(object):
 
     def __init__(self):
-        self.data = []
+        self._leg = {'shoulder': None, 'elbow': None, 'wrist': None}
 
-    def set_angles(self, coxa, femur, tibia):
-        self.data = [coxa, femur, tibia]
+    def set_angles(self, angles):
+        self._leg.update(angles)
 
-    def angles(self):
-        return self.data
+    def __repr__(self):
+        r = ''
+        for joint_name in self._leg:
+            r += joint_name + ': ' + str(self._leg.get(joint_name)) + '\n'
+        return r
