@@ -1,5 +1,5 @@
-from Packet import Packet
 from robot.leg import Leg
+
 
 class State:
 
@@ -19,7 +19,7 @@ class State:
         self.leg_6.set_angles(90, 100, 120)
 
     def home(self):
-        home_packet = Packet()
+        #home_packet = Packet()
 
         self.leg_1.set_angles(90, 100, 120)
         self.leg_2.set_angles(90, 100, 120)
@@ -28,16 +28,16 @@ class State:
         self.leg_5.set_angles(90, 100, 120)
         self.leg_6.set_angles(90, 100, 120)
 
-        home_packet.set_leg(1, self.leg_1)
-        home_packet.set_leg(2, self.leg_2)
-        home_packet.set_leg(3, self.leg_3)
-        home_packet.set_leg(4, self.leg_4)
-        home_packet.set_leg(5, self.leg_5)
-        home_packet.set_leg(6, self.leg_6)
+        #home_packet.set_leg(1, self.leg_1)
+        #home_packet.set_leg(2, self.leg_2)
+        #home_packet.set_leg(3, self.leg_3)
+        #home_packet.set_leg(4, self.leg_4)
+        #home_packet.set_leg(5, self.leg_5)
+        #home_packet.set_leg(6, self.leg_6)
 
-        home_packet.make_packet()
-        packet_list = [home_packet]
-        return packet_list
+        #home_packet.make_packet()
+        #packet_list = [home_packet]
+        #return packet_list
 
     def storage(self):
         storage_packet = Packet()

@@ -1,4 +1,4 @@
-class Packet:
+class Packet(object):
     def __init__(self):
         self.data = ""
         self.legs = {}

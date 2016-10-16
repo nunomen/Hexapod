@@ -1,7 +1,7 @@
 
 
 # Class leg will be moved to the kinematics package
-class Leg:
+class Leg(object):
 
     def __init__(self):
         self.data = []
