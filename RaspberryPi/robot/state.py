@@ -1,4 +1,4 @@
-from robot.leg import Leg
+from leg import Leg
 
 
 class State(object):
@@ -8,6 +8,9 @@ class State(object):
         self._legs = {1:Leg(), 2:Leg(), 3:Leg(),
                      4:Leg(), 5:Leg(), 6:Leg()}
         self.set_home()
+
+    def legs(self):
+        return self._legs
 
     def set_home(self):
         # Set the robot to home configuration
@@ -32,3 +35,6 @@ class State(object):
         for leg_name in self._legs:
             r += leg_name + ': ' + str(self._legs.get(leg_name)) + '\n'
         return r
+
+if __name__ == '__main__':
+    pass
